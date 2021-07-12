@@ -36,3 +36,5 @@ export const updateCommentBounty = (data, commentId) =>
     RequestTypes.Put,
     data
   );
+
+export const updateCommentLastSeen = (id) => dashincubatorRequest(`bounties/comment/${id}/last-seen`, RequestTypes.Put);

@@ -131,7 +131,7 @@ export default function ConceptsView({ match }) {
   const [searchCreators, setSearchCreators] = useState([]);
   const [searchingCreators, setSearchingCreators] = useState(false);
   const [requestModal, setRequestModal] = useState(false);
-  const [admins, setAdmins] = useState(null);
+  const [admins, setAdmins] = useState([]);
   const statusRef = useRef();
   const creatorRef = useRef();
 
@@ -149,6 +149,15 @@ export default function ConceptsView({ match }) {
   useEffect(() => {
     getAdminsSimple()
       .then((res) => res.json())
+      .then((data) => data.sort((a, b) => {
+        if (a.username.toLowerCase() < b.username.toLowerCase()) {
+          return -1;
+        }
+        if (a.username.toLowerCase() === b.username.toLowerCase()) {
+          return 0;
+        }
+        return 1;
+      }))
       .then((data) => setAdmins(data));
   }, []);
 
@@ -193,6 +202,17 @@ export default function ConceptsView({ match }) {
           : true)
     );
   }, [concepts, search, searchCreators, searchStatus]);
+
+  const filteredAdmins = useMemo(() => {
+    return admins.filter(
+      (admin) =>
+        concepts.findIndex(
+          (concept) =>
+            concept.user.username === admin.username &&
+            searchStatus.includes(concept.status === "review" ? "open" : "accepted")
+        ) >= 0
+    );
+  }, [admins, concepts, searchStatus]);
 
   return (
     <MainLayout match={match}>
@@ -276,7 +296,7 @@ export default function ConceptsView({ match }) {
           >
             {searchingCreators && (
               <div className={styles.dropdownContent} ref={creatorRef}>
-                {admins.map((tag, i) => (
+                {filteredAdmins.map((tag, i) => (
                   <div
                     style={{
                       marginTop: i > 0 && "8px",

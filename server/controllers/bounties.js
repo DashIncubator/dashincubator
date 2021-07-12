@@ -13,7 +13,26 @@ const notificationsCollection = getTable("notifications");
 router.get(
   "/",
   ...authHandlers(async (req, res) => {
-    bountiesCollection.find({ type: "bounty" }).toArray((err, bounties) => {
+    bountiesCollection.aggregate([
+      { $match: { type: "bounty" } },
+      {
+        $lookup: {
+          from: "tasks",
+          localField: "_id",
+          foreignField: "bountyID",
+          as: "tasks",
+        }
+      },
+      {
+        $lookup: {
+          from: "activity",
+          localField: "_id",
+          foreignField: "bountyID",
+          as: "comments"
+        }
+      }
+    ])
+      .toArray((err, bounties) => {
       res.send(
         bounties.sort(
           (a, b) => new Date(b.dateCreated) - new Date(a.dateCreated)
@@ -22,6 +41,40 @@ router.get(
     });
   })
 );
+
+router.get(
+  "/me",
+  ...authHandlers(async (req, res) => {
+    const { email: me } = req.tokenPayload;
+    bountiesCollection
+      .find({
+        $or: [
+          {
+            $and: [
+              { type: "bounty" },
+              {
+                $or: [
+                  { "primaryAdmin.email": me },
+                  { "secondaryAdmin.eamil": me },
+                ]
+              }
+            ]
+          },
+          {
+            $and: [
+              { type: "concept" },
+              { "user.email": me },
+            ]
+          }
+        ]
+      })
+      .toArray((err, bounties) => {
+        res.send(
+          bounties.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated))
+        );
+      })
+  })
+)
 
 router.put(
   "/comment/:id",
@@ -108,6 +161,28 @@ router.get(
   })
 );
 
+router.put(
+  "/comment/:id/last-seen",
+  ...authHandlers(async (req, res) => {
+    // Read out comments
+    try {
+      await activityCollection.updateMany(
+        {
+          $or: [
+            {bountyID: ObjectID(req.params.id), activityLevel: "task"},
+            {bountyID: ObjectID(req.params.id), activityLevel: "bounty"},
+          ]
+        },
+        {$set: {lastViewedAt: new Date()}}
+      );
+
+      res.send({message: "success"});
+    } catch (e) {
+      res.status(500).send({message: e.message});
+    }
+  })
+);
+
 router.get(
   "/concepts/public",
   ...authHandlers(async (req, res) => {
@@ -152,16 +227,14 @@ router.get(
       ])
       .toArray((err, bounties) => {
         res.send(
-          bounties
-            .sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated))
-            .map((bounty) => ({
-              ...bounty,
-              comments: bounty.comments.filter(
-                (comment) =>
-                  ["task", "bounty"].includes(comment.activityLevel) &&
-                  comment.activityType === "commentBounty"
-              ),
-            }))
+          bounties.sort(
+            (a, b) => new Date(b.dateCreated) - new Date(a.dateCreated)
+          ).map((bounty) => ({
+            ...bounty,
+            comments: bounty.comments
+              .filter(comment => ["task", "bounty"].includes(comment.activityLevel) && comment.activityType === "commentBounty")
+              .sort((a, b) => new Date(b.date) - new Date(a.date))
+          }))
         );
       });
   })

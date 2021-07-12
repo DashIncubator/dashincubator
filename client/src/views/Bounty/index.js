@@ -5,7 +5,7 @@ import { createUseStyles } from "react-jss";
 import {
   getBounty,
   getBountyActivity,
-  commentBounty,
+  commentBounty, updateCommentLastSeen,
 } from "../../api/bountiesApi";
 import MainLayout from "../../layouts/MainLayout";
 import { ProfileLocation, RootLocation } from "../../Locations";
@@ -184,14 +184,15 @@ export default function BountyView({ match }) {
   useEffect(() => {
     getBounty(match.params.id)
       .then((result) => result.json())
-      .then((data) => {
+      .then(async (data) => {
         if (data.error) {
           history.push(RootLocation);
         } else {
           setBounty(data);
-          getBountyActivity(data._id)
-            .then((result) => result.json())
-            .then((data) => setActivity(data));
+          const newActivity = await getBountyActivity(data._id)
+            .then((result) => result.json());
+          setActivity(newActivity);
+          await updateCommentLastSeen(data._id);
         }
       });
     moment.updateLocale("en", {
