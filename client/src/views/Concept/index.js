@@ -5,7 +5,7 @@ import { createUseStyles } from "react-jss";
 import {
   commentBounty,
   getBounty,
-  getBountyActivity,
+  getBountyActivity, updateCommentLastSeen,
 } from "../../api/bountiesApi";
 import MainLayout from "../../layouts/MainLayout";
 import moment from "moment";
@@ -155,13 +155,12 @@ export default function ConceptView({ match }) {
   useEffect(() => {
     getBounty(match.params.id)
       .then((result) => result.json())
-      .then((data) => {
-        getBountyActivity(data._id)
-          .then((data) => data.json())
-          .then((results) => {
-            setActivity(results);
-            setConcept(data);
-          });
+      .then(async (data) => {
+        const results = await getBountyActivity(data._id)
+          .then((data) => data.json());
+        await updateCommentLastSeen(data._id);
+        setActivity(results);
+        setConcept(data);
       });
   }, [match.params.id]);
 

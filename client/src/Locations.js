@@ -16,6 +16,8 @@ export const EditConceptLocation = (id) => `/concept/${id}/edit`;
 export const ApproveConceptLocationTemplate = "/concept/:id/approve";
 export const ApproveConceptLocation = (id) => `/concept/${id}/approve`;
 
+export const BountiesLocation = "/bounties";
+
 export const BountyLocationTemplate = "/bounty/:id";
 export const BountyLocation = (id) => `/bounty/${id}`;
 

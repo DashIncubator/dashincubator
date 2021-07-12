@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 import { createUseStyles } from "react-jss";
 import { ConceptLocation } from "../Locations";
 import FadeIn from "react-fade-in";
@@ -44,7 +44,7 @@ const useStyles = createUseStyles({
   },
   conceptTitle: {
     fontWeight: 600,
-    fontSize: 14,
+    fontSize: 18,
     lineHeight: "17px",
     marginBottom: 8,
   },
@@ -84,6 +84,10 @@ export default function ConceptListItem({ concept, search }) {
     )
   );
 
+  const unreadComments = useMemo(() => {
+    return concept.comments.filter(comment => !comment.lastViewedAt);
+  }, [concept]);
+
   return (
     <FadeIn>
       <div
@@ -109,7 +113,7 @@ export default function ConceptListItem({ concept, search }) {
         </div>
         <div className={classes.conceptDescription} dangerouslySetInnerHTML={{ __html: highlightedValueProposition }} />
         <div className={classes.conceptComments}>
-          <img src={concept.comments.length > 0 ? commentNew : commentEmpty } style={{width: 16}} alt="comments-new" />
+          <img src={unreadComments.length > 0 ? commentNew : commentEmpty } style={{width: 16}} alt="comments-new" />
         </div>
       </div>
     </FadeIn>
