@@ -100,10 +100,10 @@ const useStyles = createUseStyles({
     padding: "8px",
     fontSize: "12px",
   },
-  rightColumn: { marginLeft: "0px", flexShrink: 0, marginTop: "24px" },
+  leftColumn: { marginRight: "0px", flexShrink: 0, marginTop: "24px" },
   [`@media (min-width: ${Breakpoints.sm}px)`]: {
     markAll: {
-      marginLeft: "24px",
+      marginRight: "150px",
       cursor: "pointer",
       display: "flex",
       alignItems: "center",
@@ -112,7 +112,7 @@ const useStyles = createUseStyles({
       marginTop: 0,
     },
     mobileHeading: { display: "flex", alignItems: "center" },
-    rightColumn: { marginLeft: "24px", flexShrink: 0, marginTop: "0px" },
+    leftColumn: { marginRight: "150px", flexShrink: 0, marginTop: "0px" },
     container: {
       maxWidth: "1050px",
       margin: "auto",
@@ -127,7 +127,7 @@ const useStyles = createUseStyles({
 });
 
 export default function DashboardView({ match }) {
-  const [notifications, setNotifications] = useState(null);
+  const [notifications, setNotifications] = useState([]);
   const [dashboardItems, setDashboardItems] = useState(null);
   const [loading, setLoading] = useState(false);
   const [dashboardLoading, setDashboardLoading] = useState(false);
@@ -172,6 +172,52 @@ export default function DashboardView({ match }) {
   return (
     <MainLayout match={match}>
       <div className={styles.container}>
+      <div className={styles.leftColumn}>
+            <>
+              <div className={cx(styles.header, styles.mobileHeading)}>
+                <div>
+                  NOTIFICATIONS{" "}
+                  {notifications.filter((notif) => !notif.isRead).length >
+                    0 && (
+                    <span className={styles.notifBadge}>
+                      {notifications.filter((notif) => !notif.isRead).length}
+                    </span>
+                  )}
+                </div>
+                {notifications.filter((notif) => !notif.isRead).length > 0 && (
+                  <div
+                    className={cx(styles.header, styles.markAll)}
+                    onClick={() => !loading && setAllRead()}
+                  >
+                    {loading ? (
+                      <div style={{ marginRight: "12px" }}>
+                        <CircularProgress
+                          style={{ color: "white" }}
+                          size={14}
+                        />
+                      </div>
+                    ) : (
+                      <img
+                        src={checkedIcon}
+                        alt="read"
+                        style={{
+                          marginRight: "8px",
+                          width: "14px",
+                          height: "14px",
+                        }}
+                      />
+                    )}
+                    Mark all notifications as read
+                  </div>
+                )}
+              </div>
+              <div style={{ marginTop: "32px" }}>
+                {notifications?.map((notification) => (
+                  <NotificationItem notification={notification} />
+                ))}
+              </div>
+            </>
+        </div>
         <div style={{ width: "100%" }}>
           <div className={styles.header}>DASHBOARD</div>
           <div style={{ marginTop: "32px", color: "white", fontSize: "18px" }}>
@@ -567,54 +613,6 @@ export default function DashboardView({ match }) {
               </div>
             )}
           </div>
-        </div>
-        <div className={styles.rightColumn}>
-          {notifications?.length > 0 && (
-            <>
-              <div className={cx(styles.header, styles.mobileHeading)}>
-                <div>
-                  NOTIFICATIONS{" "}
-                  {notifications.filter((notif) => !notif.isRead).length >
-                    0 && (
-                    <span className={styles.notifBadge}>
-                      {notifications.filter((notif) => !notif.isRead).length}
-                    </span>
-                  )}
-                </div>
-                {notifications.filter((notif) => !notif.isRead).length > 0 && (
-                  <div
-                    className={cx(styles.header, styles.markAll)}
-                    onClick={() => !loading && setAllRead()}
-                  >
-                    {loading ? (
-                      <div style={{ marginRight: "12px" }}>
-                        <CircularProgress
-                          style={{ color: "white" }}
-                          size={14}
-                        />
-                      </div>
-                    ) : (
-                      <img
-                        src={checkedIcon}
-                        alt="read"
-                        style={{
-                          marginRight: "8px",
-                          width: "14px",
-                          height: "14px",
-                        }}
-                      />
-                    )}
-                    Mark all notifications as read
-                  </div>
-                )}
-              </div>
-              <div style={{ marginTop: "32px" }}>
-                {notifications?.map((notification) => (
-                  <NotificationItem notification={notification} />
-                ))}
-              </div>
-            </>
-          )}
         </div>
       </div>
     </MainLayout>

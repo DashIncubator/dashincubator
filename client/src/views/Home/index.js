@@ -6,6 +6,8 @@ import { fetchOpenTasks } from "../../api/tasksApi";
 import { createUseStyles } from "react-jss";
 import useOutsideAlerter, { taskTypes, Breakpoints } from "../../utils/utils";
 import TaskListCard from "../../components/TaskListCard";
+import NotificationItem from "../../components/NotificationItem";
+import { fetchNotifications } from "../../api/global";
 
 import caretDownIcon from "./images/caretDown.svg";
 import check from "./images/check.svg";
@@ -118,6 +120,7 @@ const useStyles = createUseStyles({
 export default function HomeView({ match }) {
   const [openTasks, setOpenTasks] = useState([]);
   const [searchTypes, setSearchTypes] = useState(["spec", "production", "qa"]);
+  const [notifications, setNotifications] = useState([])
   const [searchingTypes, setSearchingTypes] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState();
@@ -132,7 +135,11 @@ export default function HomeView({ match }) {
 
         const taskData = await fetchOpenTasks();
         setOpenTasks(taskData);
-
+        fetchNotifications()
+          .then((data) => data.json())
+          .then((result) => {
+            setNotifications(result)
+          });
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -170,6 +177,38 @@ export default function HomeView({ match }) {
       <FadeIn>
         <div className={styles.container}>
           <div style={{ display: "flex" }}>
+          <div className={styles.conceptsColumn}>
+                <div
+                  className={styles.columnHeader}
+                  style={{ display: "block" }}
+                >
+                  Notifications
+                </div>
+
+                {loading ? (
+                  <div className={styles.conceptsLoader}>
+                    <CircularProgress style={{ color: "white" }} />
+                  </div>
+                ) : (
+                  notifications.length > 0 && (
+                    <div style={{ marginTop: "8px" }}>
+                      {notifications.map((concept, i) => (
+                        <>
+                          {i !== 0 && (
+                            <hr
+                              style={{
+                                opacity: 0.15,
+                                border: "0.5px solid #fff",
+                              }}
+                            />
+                          )}
+                          <NotificationItem notification={notifications} />
+                        </>
+                      ))}
+                    </div>
+                  )
+                )}
+              </div>
             {
               <div
                 style={{
