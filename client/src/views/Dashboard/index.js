@@ -28,16 +28,7 @@ const defaultOptions = {
 };
 
 const useStyles = createUseStyles({
-  container: {
-    maxWidth: "100vw",
-    margin: "auto",
-    padding: "0 24px 88px 24px",
-    marginTop: "32px",
-    color: "#0B0F3B",
-    display: "flex",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-  },
+  container: { maxWidth: "100vw", margin: "auto", padding: "0 24px" },
   markAll: {
     marginLeft: "0px",
     cursor: "pointer",
@@ -102,6 +93,7 @@ const useStyles = createUseStyles({
   },
   leftColumn: { marginRight: "0px", flexShrink: 0, marginTop: "24px" },
   [`@media (min-width: ${Breakpoints.sm}px)`]: {
+    container: { maxWidth: 1600, margin: "auto", padding: "0 88px" },
     markAll: {
       marginRight: "150px",
       cursor: "pointer",
@@ -113,16 +105,6 @@ const useStyles = createUseStyles({
     },
     mobileHeading: { display: "flex", alignItems: "center" },
     leftColumn: { marginRight: "150px", flexShrink: 0, marginTop: "0px" },
-    container: {
-      maxWidth: "1050px",
-      margin: "auto",
-      padding: "0 88px 88px 88px",
-      marginTop: "32px",
-      color: "#0B0F3B",
-      display: "flex",
-      justifyContent: "space-between",
-      flexWrap: "nowrap",
-    },
   },
 });
 
@@ -172,6 +154,7 @@ export default function DashboardView({ match }) {
   return (
     <MainLayout match={match}>
       <div className={styles.container}>
+        <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '50px'}}>
       <div className={styles.leftColumn}>
             <>
               <div className={cx(styles.header, styles.mobileHeading)}>
@@ -613,6 +596,7 @@ export default function DashboardView({ match }) {
               </div>
             )}
           </div>
+        </div>
         </div>
       </div>
     </MainLayout>

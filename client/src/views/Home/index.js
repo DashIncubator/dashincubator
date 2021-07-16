@@ -15,13 +15,7 @@ import checked from "./images/checked.svg";
 import { CircularProgress } from "@material-ui/core";
 
 const useStyles = createUseStyles({
-  container: {
-    maxWidth: "100vw",
-    margin: "auto",
-    padding: "0 24px",
-    marginTop: "32px",
-    color: "#0B0F3B",
-  },
+  container: { maxWidth: "100vw", margin: "auto", padding: "0 24px" },
   searchInput: {
     border: "none",
     backgroundColor: "transparent",
@@ -107,13 +101,7 @@ const useStyles = createUseStyles({
     width: "160px",
   },
   [`@media (min-width: ${Breakpoints.sm}px)`]: {
-    container: {
-      maxWidth: "1050px",
-      margin: "auto",
-      padding: "0 88px",
-      marginTop: "32px",
-      color: "#0B0F3B",
-    },
+    container: { maxWidth: 1600, marginTop: "50px", padding: "0 88px" },
   },
 });
 
