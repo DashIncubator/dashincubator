@@ -3,7 +3,9 @@ import { createUseStyles } from "react-jss";
 import { useHistory } from "react-router";
 import { ProfileLocation } from "../Locations";
 import useGlobalState from "../state";
-import { formatTask, Breakpoints } from "../utils/utils";
+import { formatTask } from "../utils/utils";
+import { Breakpoints } from "../utils/breakpoint";
+
 import CompleteJobView from "../views/CompleteJob";
 import CompleteTaskView from "../views/CompleteTask";
 import EditTaskView from "../views/EditTask";

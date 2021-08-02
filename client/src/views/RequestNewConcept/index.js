@@ -9,9 +9,11 @@ import { useHistory } from "react-router";
 import { CircularProgress } from "@material-ui/core";
 import DashModal from "../../components/DashModal";
 import doneIcon from "../Concept/images/done.svg";
-import { isValidURL, toolbarConfig, Breakpoints } from "../../utils/utils";
+import { isValidURL, toolbarConfig } from "../../utils/utils";
+
 import removeIcon from "./images/close.svg";
 import plusIcon from "../Tasks/images/add.svg";
+import { Breakpoints } from "../../utils/breakpoint";
 
 const useStyles = createUseStyles({
   inputTitle: {

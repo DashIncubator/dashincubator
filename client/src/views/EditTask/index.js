@@ -22,7 +22,7 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import { makeStyles } from "@material-ui/core/styles";
-import { Breakpoints } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 
 const useStyles = createUseStyles({
   inputTitle: {

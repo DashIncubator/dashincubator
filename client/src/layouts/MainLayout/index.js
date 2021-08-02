@@ -6,7 +6,8 @@ import {
   ConceptsLocation,
   PaymentsLocation,
   ProfileLocation,
-  RootLocation, TasksLocation,
+  RootLocation,
+  TasksLocation,
 } from "../../Locations";
 import logoutIcon from "./images/logout.svg";
 import { removeAuthToken } from "../../api/serverRequest";
@@ -15,7 +16,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import dashLogo from "../../views/Login/images/dashLogo.svg";
 import checkboxIcon from "./images/checkbox.svg";
 import { createUseStyles } from "react-jss";
-import { Breakpoints } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 import UserAvatar from "../../components/UserAvatar";
 import { countNotifications } from "../../api/notificationsApi";
 import { fetchDashboardCount } from "../../api/global";
@@ -56,6 +57,10 @@ const useStyles = createUseStyles({
     alignItems: "center",
     marginLeft: "16px",
   },
+  navItemsContainerMobile: {
+    display: "flex",
+    flexDirection: "column",
+  },
   container: { maxWidth: "100vw", margin: "auto", padding: "0 24px" },
   navTitle: { marginLeft: "6px", fontWeight: 600, lineHeight: "17px" },
   hamburger: { cursor: "pointer", display: "block" },
@@ -92,7 +97,7 @@ const useStyles = createUseStyles({
     alignItems: "center",
     justifyContent: "center",
   },
-  [`@media (min-width: ${Breakpoints.sm}px)`]: {
+  [`@media (min-width: ${Breakpoints.md}px)`]: {
     container: { maxWidth: 1600, margin: "auto", padding: "0 88px" },
     logoText: {
       display: "block",
@@ -181,28 +186,6 @@ export default function MainLayout({ children, style, match }) {
             <img src={homeIcon} alt={"home"} style={{ width: "16px" }} />
             <div className={styles.navTitle}>Home</div>
           </div>
-          {/*<div*/}
-          {/*  className={styles.navItem}*/}
-          {/*  style={{ marginTop: "24px" }}*/}
-          {/*  onClick={() => {*/}
-          {/*    setShowNav(false);*/}
-          {/*    history.push(DashboardLocation);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  <img*/}
-          {/*    src={notificationIcon}*/}
-          {/*    alt={"time"}*/}
-          {/*    style={{ width: "16px" }}*/}
-          {/*  />*/}
-          {/*  <div className={styles.navTitle}>Dashboard</div>*/}
-          {/*  {notifCount ? (*/}
-          {/*    <div className={styles.notifCount}>{notifCount}</div>*/}
-          {/*  ) : (*/}
-          {/*    <div style={{ opacity: 0 }} className={styles.notifCount}>*/}
-          {/*      0*/}
-          {/*    </div>*/}
-          {/*  )}*/}
-          {/*</div>*/}
           <div
             className={styles.navItem}
             style={{ marginTop: "24px" }}
@@ -227,17 +210,6 @@ export default function MainLayout({ children, style, match }) {
             <img src={checkboxIcon} alt={"check"} style={{ width: "16px" }} />
             <div className={styles.navTitle}>Concepts</div>
           </div>
-          {/*<div*/}
-          {/*  className={styles.navItem}*/}
-          {/*  style={{ marginTop: "24px" }}*/}
-          {/*  onClick={() => {*/}
-          {/*    setShowNav(false);*/}
-          {/*    history.push(ActivityLocation);*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  <img src={timeIcon} alt={"time"} style={{ width: "16px" }} />*/}
-          {/*  <div className={styles.navTitle}>Activity</div>*/}
-          {/*</div>*/}
           <div
             className={styles.navItem}
             style={{ marginTop: "24px" }}
@@ -257,17 +229,19 @@ export default function MainLayout({ children, style, match }) {
               onLogout();
             }}
           >
-            <img
-              onClick={() => onLogout()}
-              src={logoutIcon}
-              alt={"time"}
-              style={{
-                width: "16px",
-                cursor: "pointer",
-                userSelect: "none",
-              }}
-            />
-            <div className={styles.navTitle}>Logout</div>
+            {loggedInUser &&
+              <img
+                onClick={() => onLogout()}
+                src={logoutIcon}
+                alt={"time"}
+                style={{
+                  width: "16px",
+                  cursor: "pointer",
+                  userSelect: "none",
+                }}
+              />
+            }
+            <div className={styles.navTitle}>{loggedInUser ? 'Logout' : 'Login | Signup'}</div>
           </div>
           <div
             className={styles.navItem}
@@ -310,30 +284,6 @@ export default function MainLayout({ children, style, match }) {
             onClick={() => setShowNav(!showNav)}
           />
           <div className={styles.navItemsContainer}>
-            {/*<div*/}
-            {/*  className={styles.navItem}*/}
-            {/*  onClick={() => history.push(DashboardLocation)}*/}
-            {/*  style={{*/}
-            {/*    borderBottom:*/}
-            {/*      match?.path === DashboardLocation*/}
-            {/*        ? "4px solid #fff"*/}
-            {/*        : "4px solid transparent",*/}
-            {/*  }}*/}
-            {/*>*/}
-            {/*  <img*/}
-            {/*    src={notificationIcon}*/}
-            {/*    alt={"time"}*/}
-            {/*    style={{ width: "16px" }}*/}
-            {/*  />*/}
-            {/*  <div className={styles.navTitle}>Dashboard</div>*/}
-            {/*  {notifCount ? (*/}
-            {/*    <div className={styles.notifCount}>{notifCount}</div>*/}
-            {/*  ) : (*/}
-            {/*    <div style={{ opacity: 0 }} className={styles.notifCount}>*/}
-            {/*      0*/}
-            {/*    </div>*/}
-            {/*  )}*/}
-            {/*</div>*/}
             <div
               className={styles.navItem}
               style={{
@@ -376,20 +326,6 @@ export default function MainLayout({ children, style, match }) {
               <img src={checkboxIcon} alt={"check"} style={{ width: "16px" }} />
               <div className={styles.navTitle}>Concepts</div>
             </div>
-            {/*<div*/}
-            {/*  className={styles.navItem}*/}
-            {/*  style={{*/}
-            {/*    marginLeft: "16px",*/}
-            {/*    borderBottom:*/}
-            {/*      match?.path === ActivityLocation*/}
-            {/*        ? "4px solid #fff"*/}
-            {/*        : "4px solid transparent",*/}
-            {/*  }}*/}
-            {/*  onClick={() => history.push(ActivityLocation)}*/}
-            {/*>*/}
-            {/*  <img src={timeIcon} alt={"time"} style={{ width: "16px" }} />*/}
-            {/*  <div className={styles.navTitle}>Activity</div>*/}
-            {/*</div>*/}
             <div
               className={styles.navItem}
               style={{
@@ -404,8 +340,7 @@ export default function MainLayout({ children, style, match }) {
               <img src={checkboxIcon} alt={"check"} style={{ width: "16px" }} />
               <div className={styles.navTitle}>Rewards</div>
             </div>
-            {
-              loggedInUser &&
+            {loggedInUser && (
               <Tooltip title="Logout">
                 <img
                   onClick={() => onLogout()}
@@ -419,17 +354,21 @@ export default function MainLayout({ children, style, match }) {
                   }}
                 />
               </Tooltip>
-            }
+            )}
             <div className={styles.avatarWrapper}>
               <UserAvatar user={loggedInUser} isProfile />
-              {
-                notifCount ? <div className={styles.notifications}>{notifCount}</div> : null
-              }
+              {notifCount ? (
+                <div className={styles.notifications}>{notifCount}</div>
+              ) : null}
             </div>
-            {
-              !loggedInUser &&
-              <div className={clsx(styles.navItem, styles.login)} onClick={handleLogin}>Login | Signup</div>
-            }
+            {!loggedInUser && (
+              <div
+                className={clsx(styles.navItem, styles.login)}
+                onClick={handleLogin}
+              >
+                Login | Signup
+              </div>
+            )}
           </div>
         </div>
       </div>

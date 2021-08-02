@@ -3,7 +3,9 @@ import { createUseStyles } from "react-jss";
 import DashModal from "../../components/DashModal";
 import doneIcon from "../Concept/images/done.svg";
 import useGlobalState from "../../state";
-import { isValidURL, toolbarConfig, Breakpoints } from "../../utils/utils";
+import { isValidURL, toolbarConfig } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
+
 import RichTextEditor from "react-rte";
 import { getTask, requestToCompleteTask } from "../../api/tasksApi";
 import { CircularProgress } from "@material-ui/core";

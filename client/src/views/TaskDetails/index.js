@@ -18,7 +18,7 @@ import ActivityItem from "../../components/ActivityItem";
 import Textarea from "../../components/Textarea";
 
 import { ProfileLocation, BountyLocation } from "../../Locations";
-import { Breakpoints } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 
 import dashLogo from "./images/dashWhite.svg";
 import doneIcon from "../Concept/images/done.svg";

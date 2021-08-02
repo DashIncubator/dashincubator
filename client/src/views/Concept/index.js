@@ -18,7 +18,9 @@ import arrowIcon from "../Login/images/arrowRight.svg";
 import UserAvatar from "../../components/UserAvatar";
 import RequestNewConceptView from "../RequestNewConcept";
 import ApproveConceptView from "../ApproveConcept";
-import { formatLink, Breakpoints, addHTTPS } from "../../utils/utils";
+
+import { formatLink, addHTTPS } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 import { isMobile } from "react-device-detect";
 import ActivityItem from "../../components/ActivityItem";
 import Textarea from "../../components/Textarea";
@@ -113,14 +115,6 @@ const useStyles = createUseStyles({
   },
   [`@media (min-width: ${Breakpoints.sm}px)`]: {
     textContainer: { flexShrink: 0, maxWidth: "516px", marginBottom: "16px" },
-    container: {
-      maxWidth: "1050px",
-      margin: "auto",
-      padding: "0 88px",
-      marginTop: "32px",
-      color: "#222",
-      paddingBottom: "88px",
-    },
     title: {
       marginLeft: "12px",
       color: "white",
@@ -138,6 +132,16 @@ const useStyles = createUseStyles({
       borderRadius: "4px",
     },
     rightColumn: { marginLeft: "8px", width: "323px" },
+  },
+  [`@media (min-width: ${Breakpoints.lg}px)`]: {
+    container: {
+      maxWidth: 1600,
+      margin: "auto",
+      padding: "0 88px",
+      marginTop: 32,
+      color: "#0B0F3B",
+      paddingBottom: "88px",
+    },
   },
 });
 
@@ -254,7 +258,8 @@ export default function ConceptView({ match }) {
               </div>
             </div>
             <div className={styles.card} style={{ marginTop: "24px" }}>
-              {loggedInUser && loggedInUser.isAdmin &&
+              {loggedInUser &&
+                loggedInUser.isAdmin &&
                 concept.user.username !== loggedInUser.username && (
                   <Button
                     style={{

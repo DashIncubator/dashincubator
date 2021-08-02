@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Breakpoints } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 import { createUseStyles } from "react-jss";
 import { CircularProgress } from "@material-ui/core";
 import warnIcon from "../Login/images/warn.svg";

@@ -9,8 +9,9 @@ import {
   //bountyTags,
   isValidURL,
   toolbarConfig,
-  Breakpoints,
 } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
+
 import projectIcon from "../ApproveConcept/images/project.svg";
 import jobIcon from "../ApproveConcept/images/job.svg";
 import serviceIcon from "../ApproveConcept/images/service.svg";

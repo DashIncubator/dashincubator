@@ -18,12 +18,9 @@ import projectIcon from "../ApproveConcept/images/project.svg";
 import serviceIcon from "../ApproveConcept/images/service.svg";
 import jobIcon from "../ApproveConcept/images/job.svg";
 import EditBountyView from "../EditBounty";
-import {
-  formatLink,
-  longhandRelative,
-  Breakpoints,
-  addHTTPS,
-} from "../../utils/utils";
+import { formatLink, longhandRelative, addHTTPS } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
+
 import TaskView from "../EditTask";
 import TaskItem from "../../components/TaskItem";
 import addTaskIcon from "./images/add.svg";
@@ -157,16 +154,17 @@ const useStyles = createUseStyles({
       borderRadius: "4px",
     },
     valueProposition: { flexShrink: 0, maxWidth: "400px" },
-
+    rightColumn: { marginLeft: "8px", width: "323px", marginTop: "0px" },
+  },
+  [`@media (min-width: ${Breakpoints.lg}px)`]: {
     container: {
-      maxWidth: "1050px",
+      maxWidth: 1600,
       margin: "auto",
       padding: "0 88px",
-      marginTop: "32px",
-      color: "#222",
+      marginTop: 32,
+      color: "#0B0F3B",
       paddingBottom: "88px",
     },
-    rightColumn: { marginLeft: "8px", width: "323px", marginTop: "0px" },
   },
 });
 
@@ -694,7 +692,9 @@ export default function BountyView({ match }) {
                         />
                         <div
                           className={styles.commentCTA}
-                          onClick={() => !loading && loggedInUser && onComment()}
+                          onClick={() =>
+                            !loading && loggedInUser && onComment()
+                          }
                         >
                           {loading ? (
                             <div

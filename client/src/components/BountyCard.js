@@ -1,8 +1,10 @@
-import React, {useMemo} from "react";
+import React, { useMemo } from "react";
 import ReactDOMServer from "react-dom/server";
 import moment from "moment";
 import UserAvatar from "./UserAvatar";
-import {longhandRelative, Breakpoints, truncate, getHighlightedText} from "../utils/utils";
+import { longhandRelative, truncate, getHighlightedText } from "../utils/utils";
+import { Breakpoints } from "../utils/breakpoint";
+
 import { useHistory } from "react-router";
 import { BountyLocation } from "../Locations";
 import { createUseStyles } from "react-jss";
@@ -24,7 +26,7 @@ const useStyles = createUseStyles({
   bountyTypeText: {
     marginLeft: 5,
     fontSize: 11,
-    lineHeight: "12px"
+    lineHeight: "12px",
   },
   bountyTaskStatus: {
     fontSize: 11,
@@ -56,7 +58,7 @@ const useStyles = createUseStyles({
     bountyTypeText: {
       marginLeft: 8,
       fontSize: 11,
-      lineHeight: "12px"
+      lineHeight: "12px",
     },
     container: {
       padding: "16px",
@@ -77,7 +79,7 @@ export default function BountyCard({ bounty, search }) {
   const highlightedValueProposition = ReactDOMServer.renderToStaticMarkup(
     getHighlightedText(
       search &&
-      bounty.valueProposition.toUpperCase().includes(search.toUpperCase())
+        bounty.valueProposition.toUpperCase().includes(search.toUpperCase())
         ? bounty.valueProposition.replace(/<[^>]*>?/gm, "")
         : truncate(bounty.valueProposition, 170).replace(/<[^>]*>?/gm, ""),
       search
@@ -87,11 +89,13 @@ export default function BountyCard({ bounty, search }) {
   const history = useHistory();
 
   const completedTasks = useMemo(() => {
-    return bounty.tasks.filter(task => task.status.toLowerCase() === "completed").length;
+    return bounty.tasks.filter(
+      (task) => task.status.toLowerCase() === "completed"
+    ).length;
   }, [bounty]);
 
   const unreadComments = useMemo(() => {
-    return bounty.comments.filter(comment => !comment.lastViewedAt);
+    return bounty.comments.filter((comment) => !comment.lastViewedAt);
   }, [bounty]);
 
   return (
@@ -103,9 +107,18 @@ export default function BountyCard({ bounty, search }) {
         {getHighlightedText(bounty.title, search)}
       </div>
       <div className={styles.bountyStatus}>
-        <div className={styles.bountyTaskStatus}>{completedTasks}/{bounty.tasks.length} Tasks Completed • </div>
-        <img src={unreadComments.length > 0 ? commentNew : commentEmpty } style={{width: 12, marginLeft: 4}} alt="comments-new" />
-        <div className={styles.bountyCreatedAt}> • {moment(bounty.approvedDate).format("D, MMM YYYY")}</div>
+        <div className={styles.bountyTaskStatus}>
+          {completedTasks}/{bounty.tasks.length} Tasks Completed •{" "}
+        </div>
+        <img
+          src={unreadComments.length > 0 ? commentNew : commentEmpty}
+          style={{ width: 12, marginLeft: 4 }}
+          alt="comments-new"
+        />
+        <div className={styles.bountyCreatedAt}>
+          {" "}
+          • {moment(bounty.approvedDate).format("D, MMM YYYY")}
+        </div>
       </div>
       <div
         className={styles.bountyDescription}

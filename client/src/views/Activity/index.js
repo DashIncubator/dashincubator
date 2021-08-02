@@ -1,5 +1,6 @@
 import { CircularProgress } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
+import { isMobile } from "react-device-detect";
 import { createUseStyles } from "react-jss";
 import { fetchActivity } from "../../api/global";
 import moment from "moment";
@@ -7,7 +8,8 @@ import ActivityGroup from "../../components/ActivityGroup";
 import searchIcon from "../Tasks/images/search.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { longhandRelative, Breakpoints } from "../../utils/utils";
+import { longhandRelative } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 
 function datesGroupByComponent(dates, token) {
   return dates.reduce(function (val, obj) {
@@ -111,6 +113,15 @@ const useStyles = createUseStyles({
       justifyContent: "space-between",
     },
   },
+  [`@media (max-width: ${Breakpoints.sm}px)`]: {
+    searchContainer: {
+      marginTop: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.3)",
+    },
+    container: {
+      marginTop: 0,
+    },
+  },
 });
 
 export default function ActivityView({ match }) {
@@ -149,68 +160,64 @@ export default function ActivityView({ match }) {
   }, [startDate, endDate, activityData]);
 
   return (
-      <div className={styles.container}>
-        <div className={styles.activityTitle}>Activities</div>
-        {activity && (
-          <div className={styles.searchContainer}>
-            <div className={styles.searchIconContainer}>
-              <img
-                src={searchIcon}
-                alt="search"
-                className={styles.searchIcon}
-              />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder={"Search by username"}
-                className={styles.searchInput}
-              />
-            </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{ color: "white", fontSize: "12px", marginRight: "6px" }}
-              >
-                From:{" "}
-              </div>
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                customInput={<input type="text" className={styles.dateInput} />}
-              />
-              <div className={styles.toDate}>To: </div>
-              <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                customInput={
-                  <input
-                    type="text"
-                    style={{
-                      marginRight: "8px",
-                    }}
-                    className={styles.dateInput}
-                  />
-                }
-              />
-            </div>
+    <div className={styles.container}>
+      {!isMobile && <div className={styles.activityTitle}>Activities</div>}
+      {activity && (
+        <div className={styles.searchContainer}>
+          <div className={styles.searchIconContainer}>
+            <img src={searchIcon} alt="search" className={styles.searchIcon} />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={"Search by username"}
+              className={styles.searchInput}
+            />
           </div>
-        )}
-        {activity ? (
-          Object.keys(activity)
-            .reverse()
-            .map((item) => (
-              <ActivityGroup activity={activity} item={item} search={search} />
-            ))
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "88px",
-            }}
-          >
-            <CircularProgress style={{ color: "white" }} />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{ color: "white", fontSize: "12px", marginRight: "6px" }}
+            >
+              From:{" "}
+            </div>
+            <DatePicker
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+              customInput={<input type="text" className={styles.dateInput} />}
+            />
+            <div className={styles.toDate}>To: </div>
+            <DatePicker
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              customInput={
+                <input
+                  type="text"
+                  style={{
+                    marginRight: "8px",
+                  }}
+                  className={styles.dateInput}
+                />
+              }
+            />
           </div>
-        )}
-      </div>
+        </div>
+      )}
+      {activity ? (
+        Object.keys(activity)
+          .reverse()
+          .map((item) => (
+            <ActivityGroup activity={activity} item={item} search={search} />
+          ))
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "88px",
+          }}
+        >
+          <CircularProgress style={{ color: "white" }} />
+        </div>
+      )}
+    </div>
   );
 }

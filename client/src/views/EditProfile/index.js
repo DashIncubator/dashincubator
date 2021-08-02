@@ -7,7 +7,7 @@ import UserAvatar from "../../components/UserAvatar";
 import { updateUser } from "../../api/usersApi";
 import { setAuthToken } from "../../api/serverRequest";
 import useGlobalState from "../../state";
-import { Breakpoints } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 
 const useStyles = createUseStyles({
   container: { minWidth: "auto", maxWidth: "100vw" },

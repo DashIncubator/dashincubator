@@ -5,11 +5,9 @@ import searchIcon from "../Tasks/images/search.svg";
 import caretDown from "../Tasks/images/caretDown.svg";
 import { getCompletedTasks } from "../../api/tasksApi";
 import { CircularProgress } from "@material-ui/core";
-import useOutsideAlerter, {
-  taskTypes,
-  truncate,
-  Breakpoints,
-} from "../../utils/utils";
+import useOutsideAlerter, { taskTypes, truncate } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
+
 import moment from "moment";
 import UserAvatar from "../../components/UserAvatar";
 import PayoutTaskView from "../PayoutTask";
@@ -40,7 +38,7 @@ const useStyles = createUseStyles({
     padding: "0 24px",
     marginTop: "32px",
     color: "#0B0F3B",
-    paddingBottom: "64px",
+    paddingBottom: "24px",
   },
   header: {
     color: "rgba(255, 255, 255, 0.8)",
@@ -175,13 +173,15 @@ const useStyles = createUseStyles({
       width: "100%",
       marginRight: "8px",
     },
+  },
+  [`@media (min-width: ${Breakpoints.lg}px)`]: {
     container: {
-      maxWidth: "1050px",
+      maxWidth: 1600,
       margin: "auto",
       padding: "0 88px",
-      marginTop: "32px",
+      marginTop: 32,
       color: "#0B0F3B",
-      paddingBottom: "64px",
+      paddingBottom: "24px",
     },
   },
 });

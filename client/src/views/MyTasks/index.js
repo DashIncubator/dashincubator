@@ -15,7 +15,7 @@ import CompleteJobView from "../CompleteJob";
 import EditTaskView from "../EditTask";
 import ReviewJobView from "../ReviewJob";
 
-import { Breakpoints } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 import { CircularProgress } from "@material-ui/core";
 import caretDown from "../Tasks/images/caretDown.svg";
 
@@ -277,102 +277,98 @@ export default function MyTasksView({ match }) {
         />
       )}
       <div style={{ width: "100%" }}>
-          <div className={styles.header}>MY TASKS</div>
-          <div
-            style={{ marginTop: "32px", color: "white", fontSize: "18px" }}
-          >
-            {myTasksLoading || !myTasksItems ? (
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <CircularProgress style={{ color: "white" }} />
+        <div className={styles.header}>MY TASKS</div>
+        <div style={{ marginTop: "32px", color: "white", fontSize: "18px" }}>
+          {myTasksLoading || !myTasksItems ? (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <CircularProgress style={{ color: "white" }} />
+            </div>
+          ) : // Show "You're all caught up" if every key in myTaskItems is an empty array
+          isAllEmpty ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div>
+                <Lottie
+                  options={defaultOptions}
+                  height={50}
+                  width={50}
+                  isClickToPauseDisabled={true}
+                />
+                <div style={{ marginTop: "4px" }}>You're all caught up </div>
               </div>
-            ) : // Show "You're all caught up" if every key in myTaskItems is an empty array
-            isAllEmpty ? (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <div>
-                  <Lottie
-                    options={defaultOptions}
-                    height={50}
-                    width={50}
-                    isClickToPauseDisabled={true}
-                  />
-                  <div style={{ marginTop: "4px" }}>
-                    You're all caught up{" "}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <FadeIn>
-                {/* 1. Tasks you’re working on -> Tasks the user has been assigned but not created a Claim for yet */}
-                {myTasksItems.workingOn?.length > 0 &&
-                  renderDropdown({
-                    setShowTaskItems: setShowWorkingOnTasks,
-                    showTaskItems: showWorkingOnTasks,
-                    taskItems: myTasksItems.workingOn,
-                    headline: "Tasks You're Working On",
-                  })}
+            </div>
+          ) : (
+            <FadeIn>
+              {/* 1. Tasks you’re working on -> Tasks the user has been assigned but not created a Claim for yet */}
+              {myTasksItems.workingOn?.length > 0 &&
+                renderDropdown({
+                  setShowTaskItems: setShowWorkingOnTasks,
+                  showTaskItems: showWorkingOnTasks,
+                  taskItems: myTasksItems.workingOn,
+                  headline: "Tasks You're Working On",
+                })}
 
-                {/* 2. Pending Claims -> Claims the user has made (on Tasks they want to claim) */}
-                {myTasksItems.pendingClaims?.length > 0 &&
-                  renderDropdown({
-                    setShowTaskItems: setShowPendingClaimsTasks,
-                    showTaskItems: showPendingClaimsTasks,
-                    taskItems: myTasksItems.pendingClaims,
-                    headline: "Pending Claims",
-                  })}
+              {/* 2. Pending Claims -> Claims the user has made (on Tasks they want to claim) */}
+              {myTasksItems.pendingClaims?.length > 0 &&
+                renderDropdown({
+                  setShowTaskItems: setShowPendingClaimsTasks,
+                  showTaskItems: showPendingClaimsTasks,
+                  taskItems: myTasksItems.pendingClaims,
+                  headline: "Pending Claims",
+                })}
 
-                {/* 3. Pending Bids -> Bids the user has made (on Tasks they want to reserve) */}
-                {myTasksItems.pendingBids?.length > 0 &&
-                  renderDropdown({
-                    setShowTaskItems: setShowPendingBidsTasks,
-                    showTaskItems: showPendingBidsTasks,
-                    taskItems: myTasksItems.pendingBids,
-                    headline: "Pending Bids",
-                  })}
+              {/* 3. Pending Bids -> Bids the user has made (on Tasks they want to reserve) */}
+              {myTasksItems.pendingBids?.length > 0 &&
+                renderDropdown({
+                  setShowTaskItems: setShowPendingBidsTasks,
+                  showTaskItems: showPendingBidsTasks,
+                  taskItems: myTasksItems.pendingBids,
+                  headline: "Pending Bids",
+                })}
 
-                {/* 4. Claims to Process -> Claims on Tasks the user is the Admin owner of (on uncompleted Tasks) */}
-                {myTasksItems.claimsToProcess?.length > 0 &&
-                  renderDropdown({
-                    setShowTaskItems: setShowClaimsToProcessTasks,
-                    showTaskItems: showClaimsToProcessTasks,
-                    taskItems: myTasksItems.claimsToProcess,
-                    headline: "Claims to Process",
-                  })}
+              {/* 4. Claims to Process -> Claims on Tasks the user is the Admin owner of (on uncompleted Tasks) */}
+              {myTasksItems.claimsToProcess?.length > 0 &&
+                renderDropdown({
+                  setShowTaskItems: setShowClaimsToProcessTasks,
+                  showTaskItems: showClaimsToProcessTasks,
+                  taskItems: myTasksItems.claimsToProcess,
+                  headline: "Claims to Process",
+                })}
 
-                {/* 5. Bids to Process -> Bids on Tasks the user is the Admin owner of */}
-                {myTasksItems.bidsToProcess?.length > 0 &&
-                  renderDropdown({
-                    setShowTaskItems: setShowBidsToProcessTasks,
-                    showTaskItems: showBidsToProcessTasks,
-                    taskItems: myTasksItems.bidsToProcess,
-                    headline: "Bids to Process",
-                  })}
+              {/* 5. Bids to Process -> Bids on Tasks the user is the Admin owner of */}
+              {myTasksItems.bidsToProcess?.length > 0 &&
+                renderDropdown({
+                  setShowTaskItems: setShowBidsToProcessTasks,
+                  showTaskItems: showBidsToProcessTasks,
+                  taskItems: myTasksItems.bidsToProcess,
+                  headline: "Bids to Process",
+                })}
 
-                {/* 6. Tasks you’re managing -> Tasks the Admin user owns that are in progress */}
-                {myTasksItems.managing?.length > 0 &&
-                  renderDropdown({
-                    setShowTaskItems: setShowManagingTasks,
-                    showTaskItems: showManagingTasks,
-                    taskItems: myTasksItems.managing,
-                    headline: "Tasks You're Managing",
-                  })}
+              {/* 6. Tasks you’re managing -> Tasks the Admin user owns that are in progress */}
+              {myTasksItems.managing?.length > 0 &&
+                renderDropdown({
+                  setShowTaskItems: setShowManagingTasks,
+                  showTaskItems: showManagingTasks,
+                  taskItems: myTasksItems.managing,
+                  headline: "Tasks You're Managing",
+                })}
 
-                {/* 7. Tasks to pay -> Completed Tasks from all users that are unpaid */}
-                {myTasksItems.tasksToPay?.length > 0 &&
-                  renderDropdown({
-                    setShowTaskItems: setShowTasksToPay,
-                    showTaskItems: showTasksToPay,
-                    taskItems: myTasksItems.tasksToPay,
-                    headline: "Tasks To Pay",
-                  })}
-              </FadeIn>
-            )}
-          </div>
+              {/* 7. Tasks to pay -> Completed Tasks from all users that are unpaid */}
+              {myTasksItems.tasksToPay?.length > 0 &&
+                renderDropdown({
+                  setShowTaskItems: setShowTasksToPay,
+                  showTaskItems: showTasksToPay,
+                  taskItems: myTasksItems.tasksToPay,
+                  headline: "Tasks To Pay",
+                })}
+            </FadeIn>
+          )}
+        </div>
       </div>
     </>
   );

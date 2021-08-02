@@ -11,9 +11,10 @@ import { CircularProgress } from "@material-ui/core";
 import eyeIcon from "./images/eye.svg";
 import eyeOffIcon from "./images/eyeOff.svg";
 import { createUseStyles } from "react-jss";
-import { randomColor, usernameIsValid, Breakpoints } from "../../utils/utils";
+import { randomColor, usernameIsValid } from "../../utils/utils";
 import warnIcon from "./images/warn.svg";
 import MainLayout from "../../layouts/MainLayout";
+import { Breakpoints } from "../../utils/breakpoint";
 
 export function validateEmail(email) {
   const re =
