@@ -8,6 +8,10 @@ import {createUseStyles} from "react-jss";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Tabs from '@material-ui/core/Tabs';
 import Tab from "@material-ui/core/Tab";
+import Accordion from '@material-ui/core/Accordion';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import useOutsideAlerter, {bountyStatus, bountyTypes, Breakpoints} from "../../utils/utils";
 import BountyCard from "../../components/BountyCard";
@@ -26,6 +30,7 @@ import serviceIcon from "../ApproveConcept/images/service.svg";
 import jobIcon from "../ApproveConcept/images/job.svg";
 import programmeIcon from "../ApproveConcept/images/programme.svg";
 import ActivityView from "../Activity";
+import {Typography} from "@material-ui/core";
 
 const useStyles = createUseStyles({
   container: {
@@ -88,6 +93,20 @@ const useStyles = createUseStyles({
     cursor: "pointer",
     userSelect: "none",
     position: "relative",
+  },
+  accordionContainer: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    maxHeight: "100%",
+  },
+  scrollable: {
+    overflow: "auto",
+    height: "calc(100vh - 240px)",
+  },
+  verticalScrollable: {
+    overflowY: "auto",
+    height: "calc(100vh - 240px)",
   },
   filterItemsContainer: {
     padding: 7,
@@ -161,6 +180,7 @@ const useStyles = createUseStyles({
     margin: "0 4px",
     padding: "0 8px",
     maxWidth: "33.3333%",
+    minWidth: 300,
     flex: 1,
     backgroundColor: "#EBECF0",
     borderRadius: 4,
@@ -219,6 +239,15 @@ const useStyles = createUseStyles({
       color: "#0B0F3B",
     },
   },
+  [`@media (max-width: ${Breakpoints.sm}px)`]: {
+    container: {
+      padding: "0 12px"
+    },
+    searchContainer: {
+      backgroundColor: "rgb(0, 0, 0, 0.3)",
+      maxWidth: "calc(100vw - 50px)"
+    }
+  }
 });
 
 const StyledTabs = withStyles({
@@ -244,6 +273,12 @@ const StyledTab = withStyles((theme) => ({
       opacity: 1,
     },
   },
+  [`@media (max-width: ${Breakpoints.sm}px)`]: {
+    root: {
+      color: '#000',
+      height: 50,
+    },
+  }
 }))((props) => <Tab disableRipple {...props} />);
 
 const dragReducer = produce((draft, action) => {
@@ -287,6 +322,7 @@ export default function BountiesView({ match }) {
   const [loading, setLoading] = useState(false);
   const [bounties, setBounties] = useState([]);
   const [admins, setAdmins] = useState([]);
+  const [activeAccordionPanel, setActiveAccordionPanel] = useState('first')
   const { loggedInUser } = useGlobalState();
   const catRef = useRef();
   const typeRef = useRef();
@@ -476,282 +512,311 @@ export default function BountiesView({ match }) {
         ? jobIcon
         : programmeIcon, []);
 
+  const bountyBoards =
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <StyledTabs
+        value={activeTab}
+        onChange={handleTabChange}
+        aria-label="bounty-tabs"
+      >
+        {loggedInUser && <StyledTab label="My Bounties" />}
+        <StyledTab label="All" />
+      </StyledTabs>
+      <div className={styles.tabContainer}>
+        <div className={styles.searchContainer}>
+          <div className={styles.searchIconContainer}>
+            <img
+              src={searchIcon}
+              alt="search"
+              className={styles.searchIcon}
+            />
+            <input
+              value={search}
+              onChange={handleSearchChange}
+              placeholder={"Find a bounty"}
+              className={styles.searchInput}
+            />
+          </div>
+          <div className={styles.filtersWrapper}>
+            <div
+              className={styles.filterContainer}
+              onClick={() => setSearchingTypes(true)}
+            >
+              {searchingTypes && (
+                <div className={styles.filterItemsContainer} ref={typeRef}>
+                  {bountyTypes.map((tag, i) => (
+                    <div
+                      className={styles.filterItemWrapper}
+                      key={`bounty-type-${i}`}
+                      onClick={modifyType(tag)}
+                    >
+                      <img
+                        src={
+                          searchTypes.find((cat) => cat === tag)
+                            ? checked
+                            : check
+                        }
+                        alt="check"
+                        style={{
+                          marginRight: "6px",
+                          width: "16px",
+                          height: "16px",
+                        }}
+                      />
+                      {getTag(tag)}
+                    </div>
+                  ))}
+                </div>
+              )}
+              <img
+                src={caretDownIcon}
+                alt="dropdown"
+                className={styles.filterCaret}
+                style={{
+                  width: "9px",
+                  marginRight: "8px",
+                  transform: searchingTypes
+                    ? "rotate(-180deg)"
+                    : "rotate(0deg)",
+                }}
+              />
+              <div
+                style={{
+                  fontWeight: 600,
+                  color: "white",
+                  fontSize: "12px",
+                  lineHeight: "15px",
+                }}
+              >
+                {isMobile ? "Types" : "Filter types"}
+              </div>
+            </div>
+            <div style={{ position: "relative", marginLeft: "20px" }}>
+              {searchingStatus && (
+                <div className={styles.filterItemsContainer} ref={catRef}>
+                  {bountyStatus.map((tag, i) => (
+                    <div
+                      className={styles.filterItemWrapper}
+                      key={`bounty-status-${i}`}
+                      onClick={() => modifyStatus(tag)}
+                    >
+                      <img
+                        src={
+                          searchStatus.find((cat) => cat === tag)
+                            ? checked
+                            : check
+                        }
+                        alt="check"
+                        className={styles.checkBox}
+                      />
+                      {tag === "active"
+                        ? "Active"
+                        : tag === "paused"
+                          ? "Paused"
+                          : "Completed"}
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div
+                className={styles.filterOuterWrapper}
+                onClick={() => setSearchingStatus(true)}
+              >
+                <img
+                  src={caretDownIcon}
+                  alt="dropdown"
+                  style={{
+                    transform: searchingStatus
+                      ? "rotate(-180deg)"
+                      : "rotate(0deg)",
+                  }}
+                  className={styles.filterCaret}
+                />
+                <div
+                  style={{
+                    fontWeight: 600,
+                    color: "white",
+                    fontSize: "12px",
+                    lineHeight: "15px",
+                  }}
+                >
+                  {isMobile ? "Status" : "Filter status"}
+                </div>
+              </div>
+            </div>
+
+            <div
+              className={styles.dropdownContainer}
+              style={{
+                marginLeft: isMobile ? "8px" : "20px",
+                paddingRight: "9px",
+              }}
+              onClick={() => setSearchingAdmins(true)}
+            >
+              {searchingAdmins && (
+                <div className={styles.dropdownContent} ref={adminRef}>
+                  {(activeTab === 0 && loggedInUser ? myFilteredAdmins : filteredAdmins).map((tag, i) => (
+                    <div
+                      style={{
+                        marginTop: i > 0 && "8px",
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        userSelect: "none",
+                      }}
+                      onClick={modifyAdmins(tag)}
+                      key={`concept-creator-${i}`}
+                    >
+                      <img
+                        src={
+                          searchAdmins.find((cat) => cat === tag) ? checked : check
+                        }
+                        alt="check"
+                        style={{
+                          marginRight: 6,
+                          width: 16,
+                          height: 16,
+                        }}
+                      />
+                      {tag.username}
+                    </div>
+                  ))}
+                </div>
+              )}
+              <img src={caretDown} alt="dropdown" />
+              <div style={{ marginLeft: "8px" }}>
+                {isMobile ? "Admins" : "Filter admins"}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className={styles.cardWrapper}>
+          {loading ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: 32,
+              }}
+            >
+              <CircularProgress style={{ color: "white" }} />
+            </div>
+          ) : search && filteredBounties.length === 0 ? (
+            <div
+              style={{
+                color: "white",
+                fontSize: 12,
+                textAlign: "center",
+                marginTop: 32,
+              }}
+            >
+              No bounties found
+            </div>
+          ) : (
+            bountyColumns.map((type) => (
+              <Droppable type="PERSON" droppableId={type} key={`droppable-${type}`}>
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className={clsx(styles.dropper, {
+                      [styles.dropOver]: snapshot.isDraggingOver,
+                    })}
+                  >
+                    <div className={styles.cardTitle}>
+                      <div
+                        className={styles.cardIcon}
+                        style={{
+                          backgroundColor:
+                            type === "project"
+                              ? "#EF8144"
+                              : type === "service"
+                                ? "#4452EF"
+                                : type === "job"
+                                  ? "#00B6F0"
+                                  : "#AD1D73",
+                        }}
+                      >
+                        <img
+                          src={getCardIcon(type)}
+                          style={{ width: 12 }}
+                          alt="icon"
+                        />
+                      </div>
+                      <span>{type}</span>
+                    </div>
+                    {cardState[type]?.map((bounty, index) => (
+                      <Draggable
+                        key={`draggable-${type}-${index}`}
+                        draggableId={bounty._id}
+                        index={index}
+                        isDragDisabled={!loggedInUser}
+                      >
+                        {(provided, snapshot) => (
+                          <div
+                            className={clsx(styles.dragger, {
+                              [styles.dragging]: snapshot.isDragging,
+                            })}
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <BountyCard bounty={bounty} search={search} />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                  </div>
+                )}
+              </Droppable>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+
+  const handleActivePanelChange = useCallback((activePanel) => () => {
+    setActiveAccordionPanel(activePanel)
+  }, [])
+
   return (
     <MainLayout match={match}>
       <div className={styles.container}>
         <DragDropContext onDragEnd={onDragEnd}>
-          <div style={{ width: "30%", marginRight: 16, }}>
-            <ActivityView />
-          </div>
-          <div style={{ width: "70%" }}>
-            <StyledTabs
-              value={activeTab}
-              onChange={handleTabChange}
-              aria-label="bounty-tabs"
-            >
-              {loggedInUser && <StyledTab label="My Bounties" />}
-              <StyledTab label="All" />
-            </StyledTabs>
-            <div className={styles.tabContainer}>
-              <div className={styles.searchContainer}>
-                <div className={styles.searchIconContainer}>
-                  <img
-                    src={searchIcon}
-                    alt="search"
-                    className={styles.searchIcon}
-                  />
-                  <input
-                    value={search}
-                    onChange={handleSearchChange}
-                    placeholder={"Find a bounty"}
-                    className={styles.searchInput}
-                  />
+          {
+            isMobile
+              ? <div className={styles.accordionContainer}>
+                  <Accordion expanded={activeAccordionPanel === 'first'} onChange={handleActivePanelChange('first')}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <Typography>Bounties</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails classes={{
+                      root: styles.scrollable
+                    }}>
+                        {bountyBoards}
+                    </AccordionDetails>
+                  </Accordion>
+                  <Accordion expanded={activeAccordionPanel === 'second'} onChange={handleActivePanelChange('second')}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                      <Typography>Activities</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails classes={{
+                      root: styles.verticalScrollable
+                    }}>
+                      <ActivityView />
+                    </AccordionDetails>
+                  </Accordion>
                 </div>
-                <div className={styles.filtersWrapper}>
-                  <div
-                    className={styles.filterContainer}
-                    onClick={() => setSearchingTypes(true)}
-                  >
-                    {searchingTypes && (
-                      <div className={styles.filterItemsContainer} ref={typeRef}>
-                        {bountyTypes.map((tag, i) => (
-                          <div
-                            className={styles.filterItemWrapper}
-                            key={`bounty-type-${i}`}
-                            onClick={modifyType(tag)}
-                          >
-                            <img
-                              src={
-                                searchTypes.find((cat) => cat === tag)
-                                  ? checked
-                                  : check
-                              }
-                              alt="check"
-                              style={{
-                                marginRight: "6px",
-                                width: "16px",
-                                height: "16px",
-                              }}
-                            />
-                            {getTag(tag)}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <img
-                      src={caretDownIcon}
-                      alt="dropdown"
-                      className={styles.filterCaret}
-                      style={{
-                        width: "9px",
-                        marginRight: "8px",
-                        transform: searchingTypes
-                          ? "rotate(-180deg)"
-                          : "rotate(0deg)",
-                      }}
-                    />
-                    <div
-                      style={{
-                        fontWeight: 600,
-                        color: "white",
-                        fontSize: "12px",
-                        lineHeight: "15px",
-                      }}
-                    >
-                      {isMobile ? "Types" : "Filter types"}
-                    </div>
+              : <>
+                  <div style={{ width: "30%", marginRight: 16, }}>
+                    <ActivityView />
                   </div>
-                  <div style={{ position: "relative", marginLeft: "20px" }}>
-                    {searchingStatus && (
-                      <div className={styles.filterItemsContainer} ref={catRef}>
-                        {bountyStatus.map((tag, i) => (
-                          <div
-                            className={styles.filterItemWrapper}
-                            key={`bounty-status-${i}`}
-                            onClick={() => modifyStatus(tag)}
-                          >
-                            <img
-                              src={
-                                searchStatus.find((cat) => cat === tag)
-                                  ? checked
-                                  : check
-                              }
-                              alt="check"
-                              className={styles.checkBox}
-                            />
-                            {tag === "active"
-                              ? "Active"
-                              : tag === "paused"
-                                ? "Paused"
-                                : "Completed"}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <div
-                      className={styles.filterOuterWrapper}
-                      onClick={() => setSearchingStatus(true)}
-                    >
-                      <img
-                        src={caretDownIcon}
-                        alt="dropdown"
-                        style={{
-                          transform: searchingStatus
-                            ? "rotate(-180deg)"
-                            : "rotate(0deg)",
-                        }}
-                        className={styles.filterCaret}
-                      />
-                      <div
-                        style={{
-                          fontWeight: 600,
-                          color: "white",
-                          fontSize: "12px",
-                          lineHeight: "15px",
-                        }}
-                      >
-                        {isMobile ? "Status" : "Filter status"}
-                      </div>
-                    </div>
+                  <div style={{ width: "70%" }}>
+                    {bountyBoards}
                   </div>
+                </>
+          }
 
-                  <div
-                    className={styles.dropdownContainer}
-                    style={{
-                      marginLeft: isMobile ? "8px" : "20px",
-                      paddingRight: "9px",
-                    }}
-                    onClick={() => setSearchingAdmins(true)}
-                  >
-                    {searchingAdmins && (
-                      <div className={styles.dropdownContent} ref={adminRef}>
-                        {(activeTab === 0 && loggedInUser ? myFilteredAdmins : filteredAdmins).map((tag, i) => (
-                          <div
-                            style={{
-                              marginTop: i > 0 && "8px",
-                              display: "flex",
-                              alignItems: "center",
-                              cursor: "pointer",
-                              userSelect: "none",
-                            }}
-                            onClick={modifyAdmins(tag)}
-                            key={`concept-creator-${i}`}
-                          >
-                            <img
-                              src={
-                                searchAdmins.find((cat) => cat === tag) ? checked : check
-                              }
-                              alt="check"
-                              style={{
-                                marginRight: 6,
-                                width: 16,
-                                height: 16,
-                              }}
-                            />
-                            {tag.username}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <img src={caretDown} alt="dropdown" />
-                    <div style={{ marginLeft: "8px" }}>
-                      {isMobile ? "Admins" : "Filter admins"}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className={styles.cardWrapper}>
-                {loading ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      marginTop: 32,
-                    }}
-                  >
-                    <CircularProgress style={{ color: "white" }} />
-                  </div>
-                ) : search && filteredBounties.length === 0 ? (
-                  <div
-                    style={{
-                      color: "white",
-                      fontSize: 12,
-                      textAlign: "center",
-                      marginTop: 32,
-                    }}
-                  >
-                    No bounties found
-                  </div>
-                ) : (
-                  bountyColumns.map((type) => (
-                    <Droppable type="PERSON" droppableId={type} key={`droppable-${type}`}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.droppableProps}
-                          className={clsx(styles.dropper, {
-                            [styles.dropOver]: snapshot.isDraggingOver,
-                          })}
-                        >
-                          <div className={styles.cardTitle}>
-                            <div
-                              className={styles.cardIcon}
-                              style={{
-                                backgroundColor:
-                                  type === "project"
-                                    ? "#EF8144"
-                                    : type === "service"
-                                    ? "#4452EF"
-                                    : type === "job"
-                                      ? "#00B6F0"
-                                      : "#AD1D73",
-                              }}
-                            >
-                              <img
-                                src={getCardIcon(type)}
-                                style={{ width: 12 }}
-                                alt="icon"
-                              />
-                            </div>
-                            <span>{type}</span>
-                          </div>
-                          {cardState[type]?.map((bounty, index) => (
-                            <Draggable
-                              key={`draggable-${type}-${index}`}
-                              draggableId={bounty._id}
-                              index={index}
-                              isDragDisabled={!loggedInUser}
-                            >
-                              {(provided, snapshot) => (
-                                <div
-                                  className={clsx(styles.dragger, {
-                                    [styles.dragging]: snapshot.isDragging,
-                                  })}
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                >
-                                  <BountyCard bounty={bounty} search={search} />
-                                </div>
-                              )}
-                            </Draggable>
-                          ))}
-                        </div>
-                      )}
-                    </Droppable>
-                  ))
-                )}
-                {/*  activeTab === 0*/}
-                {/*    ? myBounties.map((bounty, index) => (*/}
-                {/*      <BountyCard bounty={bounty} search={search} key={`bounty-card-${index}`} />*/}
-                {/*    ))*/}
-                {/*    : filteredBounties.map((bounty, index) => (*/}
-                {/*      <BountyCard bounty={bounty} search={search} key={`bounty-card-${index}`} />*/}
-                {/*    ))*/}
-                {/*)}*/}
-              </div>
-            </div>
-          </div>
         </DragDropContext>
       </div>
     </MainLayout>

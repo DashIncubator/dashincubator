@@ -1,5 +1,6 @@
 import { CircularProgress } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
+import {isMobile} from "react-device-detect";
 import { createUseStyles } from "react-jss";
 import { fetchActivity } from "../../api/global";
 import moment from "moment";
@@ -111,6 +112,15 @@ const useStyles = createUseStyles({
       justifyContent: "space-between",
     },
   },
+  [`@media (max-width: ${Breakpoints.sm}px)`]: {
+    searchContainer: {
+      marginTop: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.3)"
+    },
+    container: {
+      marginTop: 0,
+    }
+  }
 });
 
 export default function ActivityView({ match }) {
@@ -150,7 +160,10 @@ export default function ActivityView({ match }) {
 
   return (
       <div className={styles.container}>
-        <div className={styles.activityTitle}>Activities</div>
+        {
+          !isMobile &&
+          <div className={styles.activityTitle}>Activities</div>
+        }
         {activity && (
           <div className={styles.searchContainer}>
             <div className={styles.searchIconContainer}>

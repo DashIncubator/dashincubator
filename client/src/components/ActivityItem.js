@@ -41,6 +41,7 @@ const useStyles = createUseStyles({
     borderRadius: "4px",
     padding: "8px",
     fontSize: "12px",
+    wordBreak: "break-word",
   }),
   commentCTA: {
     backgroundColor: "#0B0F3B",
