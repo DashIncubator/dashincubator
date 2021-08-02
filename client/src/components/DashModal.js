@@ -39,7 +39,7 @@ const useStyles = createUseStyles({
     cursor: "pointer",
     display: "block",
   },
-  [`@media (min-width: ${Breakpoints.sm}px)`]: {
+  [`@media (min-width: ${Breakpoints.lg}px)`]: {
     closeIcon: {
       position: "absolute",
       display: "none",

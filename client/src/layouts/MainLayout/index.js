@@ -229,17 +229,19 @@ export default function MainLayout({ children, style, match }) {
               onLogout();
             }}
           >
-            <img
-              onClick={() => onLogout()}
-              src={logoutIcon}
-              alt={"time"}
-              style={{
-                width: "16px",
-                cursor: "pointer",
-                userSelect: "none",
-              }}
-            />
-            <div className={styles.navTitle}>Logout</div>
+            {loggedInUser &&
+              <img
+                onClick={() => onLogout()}
+                src={logoutIcon}
+                alt={"time"}
+                style={{
+                  width: "16px",
+                  cursor: "pointer",
+                  userSelect: "none",
+                }}
+              />
+            }
+            <div className={styles.navTitle}>{loggedInUser ? 'Logout' : 'Login | Signup'}</div>
           </div>
           <div
             className={styles.navItem}
