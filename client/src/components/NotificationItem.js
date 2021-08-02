@@ -6,7 +6,9 @@ import checkedIcon from "../views/Tasks/images/checked.svg";
 import { renderToString } from "react-dom/server";
 import { BountyLocation, ProfileLocation } from "../Locations";
 import moment from "moment";
-import { truncate, Breakpoints } from "../utils/utils";
+import { truncate } from "../utils/utils";
+import { Breakpoints } from "../utils/breakpoint";
+
 import { CircularProgress } from "@material-ui/core";
 import { readNotification } from "../api/notificationsApi";
 

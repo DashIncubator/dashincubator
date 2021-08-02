@@ -7,7 +7,7 @@ import UserAvatar from "../../components/UserAvatar";
 import MainLayout from "../../layouts/MainLayout";
 import { RootLocation } from "../../Locations";
 import useGlobalState from "../../state";
-import { Breakpoints } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 import searchIcon from "../Tasks/images/search.svg";
 
 const useStyles = createUseStyles({

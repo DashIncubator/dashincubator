@@ -9,7 +9,8 @@ import dashLogo from "../../components/images/dashLogo.svg";
 import UserAvatar from "../../components/UserAvatar";
 import { useHistory } from "react-router";
 import { ProfileLocation } from "../../Locations";
-import { addHTTPS, Breakpoints } from "../../utils/utils";
+import { addHTTPS } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 
 const useStyles = createUseStyles({
   input: {

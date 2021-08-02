@@ -18,7 +18,9 @@ import arrowIcon from "../Login/images/arrowRight.svg";
 import UserAvatar from "../../components/UserAvatar";
 import RequestNewConceptView from "../RequestNewConcept";
 import ApproveConceptView from "../ApproveConcept";
-import { formatLink, Breakpoints, addHTTPS } from "../../utils/utils";
+
+import { formatLink, addHTTPS } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 import { isMobile } from "react-device-detect";
 import ActivityItem from "../../components/ActivityItem";
 import Textarea from "../../components/Textarea";
@@ -256,7 +258,8 @@ export default function ConceptView({ match }) {
               </div>
             </div>
             <div className={styles.card} style={{ marginTop: "24px" }}>
-              {loggedInUser && loggedInUser.isAdmin &&
+              {loggedInUser &&
+                loggedInUser.isAdmin &&
                 concept.user.username !== loggedInUser.username && (
                   <Button
                     style={{

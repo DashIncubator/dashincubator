@@ -8,7 +8,7 @@ import checklistIcon from "./images/checklistIcon.svg";
 import productIcon from "./images/productIcon.svg";
 import qualityIcon from "./images/qualityIcon.svg";
 
-import { getTaskActivity } from "../api/tasksApi";
+import { getTask } from "../api/tasksApi";
 
 import TaskDetailsView from "../views/TaskDetails";
 import ReviewTaskView from "../views/ReviewTask";
@@ -18,7 +18,8 @@ import EditTaskView from "../views/EditTask";
 import ReviewJobView from "../views/ReviewJob";
 
 import moment from "moment";
-import { longhandRelative, Breakpoints } from "../utils/utils";
+import { longhandRelative } from "../utils/utils";
+import { Breakpoints } from "../utils/breakpoint";
 import { useHistory } from "react-router";
 import { BountyLocation } from "../Locations";
 import { createUseStyles } from "react-jss";
@@ -114,23 +115,24 @@ export default function TaskListCard({ taskData, onChange }) {
   });
 
   useEffect(() => {
-    getTaskActivity(task._id)
-      .then((data) => data.json())
-      .then((results) => {
-        if (results.length) {
-          let unseen = 0;
+    let unseen = 0;
 
-          for (let i = 0; i < results.length; i++) {
-            // if the current logged in user doesn't exist in activity's last view, add to the unseen comments
-            if (!results[i].lastView?.[loggedInUser?.username]) {
-              unseen++;
-            }
-          }
-          setUnseenComments(unseen);
+    if (task?.comments.length) {
+      task.comments.forEach((comment) => {
+        if (!comment.lastView?.[loggedInUser?.username]) {
+          unseen++;
         }
       });
-    //eslint-disable-next-line
-  }, [showDetailsModal]);
+    }
+    setUnseenComments(unseen);
+    // eslint-disable-next-line
+  }, [task]);
+
+  async function refetchTask() {
+    let taskData = await getTask(task._id);
+    taskData = await taskData.json();
+    setTask(taskData);
+  }
 
   return (
     <>
@@ -138,7 +140,10 @@ export default function TaskListCard({ taskData, onChange }) {
         <TaskDetailsView
           task={task}
           open={showDetailsModal}
-          onClose={() => setShowDetailsModal(false)}
+          onClose={() => {
+            setShowDetailsModal(false);
+            refetchTask();
+          }}
           onReview={() => {
             setShowDetailsModal(false);
             setShowReviewModal(true);

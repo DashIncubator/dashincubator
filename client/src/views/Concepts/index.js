@@ -1,18 +1,23 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { createUseStyles } from "react-jss";
 import MainLayout from "../../layouts/MainLayout";
 import searchIcon from "../Tasks/images/search.svg";
 import caretDown from "../Tasks/images/caretDown.svg";
 import { CircularProgress } from "@material-ui/core";
-import useOutsideAlerter, {
-  conceptStatus,
-  Breakpoints,
-} from "../../utils/utils";
+import useOutsideAlerter, { conceptStatus } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
+
 import { getAdminsSimple } from "../../api/usersApi";
 import check from "../Tasks/images/check.svg";
 import checked from "../Tasks/images/checked.svg";
 import { isMobile } from "react-device-detect";
-import {fetchAllConcepts} from "../../api/bountiesApi";
+import { fetchAllConcepts } from "../../api/bountiesApi";
 import ConceptListItem from "../../components/ConceptListItem";
 import addIcon from "../Tasks/images/add.svg";
 import RequestNewConceptView from "../RequestNewConcept";
@@ -25,7 +30,7 @@ const useStyles = createUseStyles({
     padding: "0 24px",
     marginTop: 32,
     color: "#0B0F3B",
-    paddingBottom: "64px",
+    paddingBottom: "24px",
   },
   header: {
     color: "rgba(255, 255, 255, 0.8)",
@@ -154,44 +159,55 @@ export default function ConceptsView({ match }) {
       .then((data) => setAdmins(data));
   }, []);
 
-  const modifyStatus = useCallback((category) => {
-    const newCategories = searchStatus.slice();
-    const catIndex = newCategories.indexOf(category);
-    if (catIndex >= 0) {
-      newCategories.splice(catIndex, 1);
-      setSearchStatus(newCategories);
-    } else {
-      newCategories.push(category);
-      setSearchStatus(newCategories);
-    }
-  }, [searchStatus]);
+  const modifyStatus = useCallback(
+    (category) => {
+      const newCategories = searchStatus.slice();
+      const catIndex = newCategories.indexOf(category);
+      if (catIndex >= 0) {
+        newCategories.splice(catIndex, 1);
+        setSearchStatus(newCategories);
+      } else {
+        newCategories.push(category);
+        setSearchStatus(newCategories);
+      }
+    },
+    [searchStatus]
+  );
 
-  const modifyCreators = useCallback((category) => {
-    const newCategories = searchCreators.slice();
-    const catIndex = newCategories.indexOf(category);
-    if (catIndex >= 0) {
-      newCategories.splice(catIndex, 1);
-      setSearchCreators(newCategories);
-    } else {
-      newCategories.push(category);
-      setSearchCreators(newCategories);
-    }
-  }, [searchCreators]);
+  const modifyCreators = useCallback(
+    (category) => {
+      const newCategories = searchCreators.slice();
+      const catIndex = newCategories.indexOf(category);
+      if (catIndex >= 0) {
+        newCategories.splice(catIndex, 1);
+        setSearchCreators(newCategories);
+      } else {
+        newCategories.push(category);
+        setSearchCreators(newCategories);
+      }
+    },
+    [searchCreators]
+  );
 
-  const handleRequestModal = useCallback((open) => () => {
-    setRequestModal(open);
-  }, []);
+  const handleRequestModal = useCallback(
+    (open) => () => {
+      setRequestModal(open);
+    },
+    []
+  );
 
   const filteredConcepts = useMemo(() => {
     return concepts.filter(
       (concept) =>
         (concept.title.toUpperCase().includes(search.toUpperCase()) ||
           concept.displayURL.toUpperCase().includes(search.toUpperCase())) &&
-        searchStatus.includes(concept.status === "review" ? "open" : "accepted") &&
+        searchStatus.includes(
+          concept.status === "review" ? "open" : "accepted"
+        ) &&
         (searchCreators.length > 0
           ? searchCreators
-            .map((user) => user?.username)
-            .includes(concept.user.username)
+              .map((user) => user?.username)
+              .includes(concept.user.username)
           : true)
     );
   }, [concepts, search, searchCreators, searchStatus]);
@@ -201,8 +217,7 @@ export default function ConceptsView({ match }) {
       <div className={styles.container}>
         <div className={styles.header}>
           CONCEPTS
-          {
-            loggedInUser &&
+          {loggedInUser && (
             <div
               className={styles.requestCTA}
               onClick={handleRequestModal(true)}
@@ -221,7 +236,7 @@ export default function ConceptsView({ match }) {
                 <div>Request New Concept</div>
               </div>
             </div>
-          }
+          )}
         </div>
         <div className={styles.inputContainer}>
           <img src={searchIcon} alt="search" style={{ padding: "9px" }} />
@@ -245,13 +260,15 @@ export default function ConceptsView({ match }) {
                       alignItems: "center",
                       cursor: "pointer",
                       userSelect: "none",
-                      textTransform: "capitalize"
+                      textTransform: "capitalize",
                     }}
                     onClick={() => modifyStatus(tag)}
                   >
                     <img
                       src={
-                        searchStatus.find((cat) => cat === tag) ? checked : check
+                        searchStatus.find((cat) => cat === tag)
+                          ? checked
+                          : check
                       }
                       alt="check"
                       style={{
@@ -294,7 +311,9 @@ export default function ConceptsView({ match }) {
                   >
                     <img
                       src={
-                        searchCreators.find((cat) => cat === tag) ? checked : check
+                        searchCreators.find((cat) => cat === tag)
+                          ? checked
+                          : check
                       }
                       alt="check"
                       style={{
@@ -321,7 +340,11 @@ export default function ConceptsView({ match }) {
             </div>
           ) : (
             filteredConcepts.map((concept, index) => (
-              <ConceptListItem concept={concept} search={search} key={`concept-list-item-${index}`} />
+              <ConceptListItem
+                concept={concept}
+                search={search}
+                key={`concept-list-item-${index}`}
+              />
             ))
           )}
         </div>

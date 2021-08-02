@@ -1,21 +1,32 @@
-import React, {useCallback, useEffect, useRef, useState, useMemo, useReducer} from "react";
-import {isMobile} from "react-device-detect";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useReducer,
+} from "react";
+import { isMobile } from "react-device-detect";
 import clsx from "clsx";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import produce from "immer";
-import { withStyles } from '@material-ui/core/styles';
-import {createUseStyles} from "react-jss";
+import { withStyles } from "@material-ui/core/styles";
+import { createUseStyles } from "react-jss";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Tabs from '@material-ui/core/Tabs';
+import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Accordion from "@material-ui/core/Accordion";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
-import useOutsideAlerter, {bountyStatus, bountyTypes, Breakpoints} from "../../utils/utils";
+import useOutsideAlerter, {
+  bountyStatus,
+  bountyTypes,
+} from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 import BountyCard from "../../components/BountyCard";
-import {fetchBounties, updateBounty} from "../../api/bountiesApi";
+import { fetchBounties, updateBounty } from "../../api/bountiesApi";
 
 import searchIcon from "../Tasks/images/search.svg";
 import checked from "../Tasks/images/checked.svg";
@@ -23,14 +34,14 @@ import check from "../Tasks/images/check.svg";
 import caretDownIcon from "../Tasks/images/caretDown.svg";
 import MainLayout from "../../layouts/MainLayout";
 import caretDown from "../Tasks/images/caretDown.svg";
-import {getAdminsSimple} from "../../api/usersApi";
+import { getAdminsSimple } from "../../api/usersApi";
 import useGlobalState from "../../state";
 import projectIcon from "../ApproveConcept/images/project.svg";
 import serviceIcon from "../ApproveConcept/images/service.svg";
 import jobIcon from "../ApproveConcept/images/job.svg";
 import programmeIcon from "../ApproveConcept/images/programme.svg";
 import ActivityView from "../Activity";
-import {Typography} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 
 const useStyles = createUseStyles({
   container: {
@@ -128,7 +139,7 @@ const useStyles = createUseStyles({
     userSelect: "none",
     "&:first-child": {
       marginTop: 0,
-    }
+    },
   },
   filterOuterWrapper: {
     display: "flex",
@@ -137,12 +148,12 @@ const useStyles = createUseStyles({
     userSelect: "none",
   },
   tabStyle: {
-    textTransform: "capitalize"
+    textTransform: "capitalize",
   },
   filterCaret: {
     width: 9,
     marginRight: 8,
-    transition: "all 0.2s"
+    transition: "all 0.2s",
   },
   tabContainer: {
     display: "flex",
@@ -198,7 +209,8 @@ const useStyles = createUseStyles({
     margin: "8px 0",
     backgroundColor: "#fff",
     borderRadius: 4,
-    boxShadow: "rgb(0 0 0 / 10%) 0px 1px 3px 0px, rgb(0 0 0 / 6%) 0px 1px 2px 0px",
+    boxShadow:
+      "rgb(0 0 0 / 10%) 0px 1px 3px 0px, rgb(0 0 0 / 6%) 0px 1px 2px 0px",
     "&:hover": {
       backgroundColor: "#F4F5F7",
     },
@@ -230,55 +242,55 @@ const useStyles = createUseStyles({
     borderRadius: 3,
     marginRight: 8,
   },
-  [`@media (min-width: ${Breakpoints.lg}px)`]: {
+  [`@media (min-width: ${Breakpoints.md}px)`]: {
     container: {
       maxWidth: 1600,
       margin: "auto",
-      padding: "0 88px",
+      padding: "0 88px 24px 88px",
       marginTop: 32,
       color: "#0B0F3B",
     },
   },
   [`@media (max-width: ${Breakpoints.sm}px)`]: {
     container: {
-      padding: "0 12px"
+      padding: "0 24px 12px 24px",
     },
     searchContainer: {
       backgroundColor: "rgb(0, 0, 0, 0.3)",
-      maxWidth: "calc(100vw - 50px)"
-    }
-  }
+      maxWidth: "calc(100vw - 50px)",
+    },
+  },
 });
 
 const StyledTabs = withStyles({
   indicator: {
-    display: 'flex',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    '& > span': {
-      width: '100%',
-      backgroundColor: '#eee',
+    display: "flex",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+    "& > span": {
+      width: "100%",
+      backgroundColor: "#eee",
     },
   },
 })((props) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
 
 const StyledTab = withStyles((theme) => ({
   root: {
-    textTransform: 'none',
-    color: '#fff',
+    textTransform: "none",
+    color: "#fff",
     fontWeight: theme.typography.fontWeightRegular,
     fontSize: theme.typography.pxToRem(15),
     marginRight: theme.spacing(1),
-    '&:focus': {
+    "&:focus": {
       opacity: 1,
     },
   },
   [`@media (max-width: ${Breakpoints.sm}px)`]: {
     root: {
-      color: '#000',
+      color: "#000",
       height: 50,
     },
-  }
+  },
 }))((props) => <Tab disableRipple {...props} />);
 
 const dragReducer = produce((draft, action) => {
@@ -292,14 +304,18 @@ const dragReducer = produce((draft, action) => {
         _id: removed._id,
         bountyType: action.to,
       })
-        .then(res => console.log(res))
-        .catch(err => console.log(err));
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
       break;
     }
     case "SET_ITEMS": {
-      draft.project = action.payload.filter(el => el.bountyType === "project");
-      draft.job = action.payload.filter(el => el.bountyType === "job");
-      draft.service = action.payload.filter(el => el.bountyType === "service");
+      draft.project = action.payload.filter(
+        (el) => el.bountyType === "project"
+      );
+      draft.job = action.payload.filter((el) => el.bountyType === "job");
+      draft.service = action.payload.filter(
+        (el) => el.bountyType === "service"
+      );
       break;
     }
     default:
@@ -322,7 +338,7 @@ export default function BountiesView({ match }) {
   const [loading, setLoading] = useState(false);
   const [bounties, setBounties] = useState([]);
   const [admins, setAdmins] = useState([]);
-  const [activeAccordionPanel, setActiveAccordionPanel] = useState('first')
+  const [activeAccordionPanel, setActiveAccordionPanel] = useState("first");
   const { loggedInUser } = useGlobalState();
   const catRef = useRef();
   const typeRef = useRef();
@@ -353,15 +369,17 @@ export default function BountiesView({ match }) {
   useEffect(() => {
     getAdminsSimple()
       .then((res) => res.json())
-      .then((data) => data.sort((a, b) => {
-        if (a.username.toLowerCase() < b.username.toLowerCase()) {
-          return -1;
-        }
-        if (a.username.toLowerCase() === b.username.toLowerCase()) {
-          return 0;
-        }
-        return 1;
-      }))
+      .then((data) =>
+        data.sort((a, b) => {
+          if (a.username.toLowerCase() < b.username.toLowerCase()) {
+            return -1;
+          }
+          if (a.username.toLowerCase() === b.username.toLowerCase()) {
+            return 0;
+          }
+          return 1;
+        })
+      )
       .then((data) => setAdmins(data));
   }, []);
 
@@ -370,23 +388,33 @@ export default function BountiesView({ match }) {
       (admin) =>
         bounties.findIndex(
           (bounty) =>
-            ((bounty.primaryAdmin && (bounty.primaryAdmin.username === admin.username)) || (bounty.secondaryAdmin && (bounty.secondaryAdmin.username === admin.username))) &&
-            searchStatus.includes(bounty.status) && searchTypes.includes(bounty.bountyType)
+            ((bounty.primaryAdmin &&
+              bounty.primaryAdmin.username === admin.username) ||
+              (bounty.secondaryAdmin &&
+                bounty.secondaryAdmin.username === admin.username)) &&
+            searchStatus.includes(bounty.status) &&
+            searchTypes.includes(bounty.bountyType)
         ) >= 0
     );
   }, [admins, bounties, searchStatus, searchTypes]);
 
   const filteredBounties = useMemo(() => {
     return bounties.filter((bounty) => {
-        return bounty.title.toUpperCase().includes(search.toUpperCase()) &&
-          searchTypes.includes(bounty.bountyType) &&
-          searchStatus.includes(bounty.status) &&
-          (searchAdmins.length > 0
-            ? (
-              (bounty.primaryAdmin && searchAdmins.find(admin => admin.username === bounty.primaryAdmin.username)) ||
-              (bounty.secondaryAdmin && searchAdmins.find(admin => admin.username === bounty.secondaryAdmin.username))
-            )
-            : true);
+      return (
+        bounty.title.toUpperCase().includes(search.toUpperCase()) &&
+        searchTypes.includes(bounty.bountyType) &&
+        searchStatus.includes(bounty.status) &&
+        (searchAdmins.length > 0
+          ? (bounty.primaryAdmin &&
+              searchAdmins.find(
+                (admin) => admin.username === bounty.primaryAdmin.username
+              )) ||
+            (bounty.secondaryAdmin &&
+              searchAdmins.find(
+                (admin) => admin.username === bounty.secondaryAdmin.username
+              ))
+          : true)
+      );
     });
   }, [bounties, search, searchTypes, searchStatus, searchAdmins]);
 
@@ -402,10 +430,17 @@ export default function BountiesView({ match }) {
       return [];
     }
     return filteredBounties.filter((bounty) => {
-      return (bounty.primaryAdmin && bounty.primaryAdmin.username === loggedInUser.username) ||
-        (bounty.secondaryAdmin && bounty.secondaryAdmin.username === loggedInUser.username) ||
+      return (
+        (bounty.primaryAdmin &&
+          bounty.primaryAdmin.username === loggedInUser.username) ||
+        (bounty.secondaryAdmin &&
+          bounty.secondaryAdmin.username === loggedInUser.username) ||
         (bounty.user && bounty.user.username === loggedInUser.username) ||
-        (bounty.tasks.findIndex((task) => task.assignee && task.assignee.username === loggedInUser.username) >= 0);
+        bounty.tasks.findIndex(
+          (task) =>
+            task.assignee && task.assignee.username === loggedInUser.username
+        ) >= 0
+      );
     });
   }, [filteredBounties, loggedInUser]);
 
@@ -414,64 +449,77 @@ export default function BountiesView({ match }) {
       (admin) =>
         myBounties.findIndex(
           (bounty) =>
-            ((bounty.user && (bounty.user.username === admin.username)) ||
-              (bounty.primaryAdmin && (bounty.primaryAdmin.username === admin.username)) ||
-              (bounty.secondaryAdmin && (bounty.secondaryAdmin.username === admin.username))
-            )
+            (bounty.user && bounty.user.username === admin.username) ||
+            (bounty.primaryAdmin &&
+              bounty.primaryAdmin.username === admin.username) ||
+            (bounty.secondaryAdmin &&
+              bounty.secondaryAdmin.username === admin.username)
         ) >= 0
     );
   }, [filteredAdmins, myBounties]);
 
-  const modifyStatus = useCallback((status) => {
-    const newStatus = searchStatus.slice();
-    const catIndex = newStatus.indexOf(status);
-    if (catIndex >= 0) {
-      newStatus.splice(catIndex, 1);
-      setSearchStatus(newStatus);
-    } else {
-      newStatus.push(status);
-      setSearchStatus(newStatus);
-    }
-  }, [searchStatus]);
+  const modifyStatus = useCallback(
+    (status) => {
+      const newStatus = searchStatus.slice();
+      const catIndex = newStatus.indexOf(status);
+      if (catIndex >= 0) {
+        newStatus.splice(catIndex, 1);
+        setSearchStatus(newStatus);
+      } else {
+        newStatus.push(status);
+        setSearchStatus(newStatus);
+      }
+    },
+    [searchStatus]
+  );
 
-  const modifyType = useCallback((category) => () => {
-    const newCategories = searchTypes.slice();
-    const catIndex = newCategories.indexOf(category);
-    if (catIndex >= 0) {
-      newCategories.splice(catIndex, 1);
-      setSearchTypes(newCategories);
-    } else {
-      newCategories.push(category);
-      setSearchTypes(newCategories);
-    }
-  }, [searchTypes]);
+  const modifyType = useCallback(
+    (category) => () => {
+      const newCategories = searchTypes.slice();
+      const catIndex = newCategories.indexOf(category);
+      if (catIndex >= 0) {
+        newCategories.splice(catIndex, 1);
+        setSearchTypes(newCategories);
+      } else {
+        newCategories.push(category);
+        setSearchTypes(newCategories);
+      }
+    },
+    [searchTypes]
+  );
 
-  const modifyAdmins = useCallback((category) => () => {
-    const newCategories = searchAdmins.slice();
-    const catIndex = newCategories.indexOf(category);
-    if (catIndex >= 0) {
-      newCategories.splice(catIndex, 1);
-      setSearchAdmins(newCategories);
-    } else {
-      newCategories.push(category);
-      setSearchAdmins(newCategories);
-    }
-  }, [searchAdmins]);
+  const modifyAdmins = useCallback(
+    (category) => () => {
+      const newCategories = searchAdmins.slice();
+      const catIndex = newCategories.indexOf(category);
+      if (catIndex >= 0) {
+        newCategories.splice(catIndex, 1);
+        setSearchAdmins(newCategories);
+      } else {
+        newCategories.push(category);
+        setSearchAdmins(newCategories);
+      }
+    },
+    [searchAdmins]
+  );
 
-  const handleTabChange = useCallback((event, newTab) => {
-    setActiveTab(newTab);
-    if (loggedInUser && newTab === 0) {
-      dispatch({
-        type: "SET_ITEMS",
-        payload: myBounties,
-      });
-    } else {
-      dispatch({
-        type: "SET_ITEMS",
-        payload: filteredBounties,
-      });
-    }
-  }, [loggedInUser, myBounties, filteredBounties]);
+  const handleTabChange = useCallback(
+    (event, newTab) => {
+      setActiveTab(newTab);
+      if (loggedInUser && newTab === 0) {
+        dispatch({
+          type: "SET_ITEMS",
+          payload: myBounties,
+        });
+      } else {
+        dispatch({
+          type: "SET_ITEMS",
+          payload: filteredBounties,
+        });
+      }
+    },
+    [loggedInUser, myBounties, filteredBounties]
+  );
 
   const handleSearchChange = useCallback((e) => {
     setSearch(e.target.value);
@@ -483,36 +531,43 @@ export default function BountiesView({ match }) {
       : tag === "job"
       ? "Jobs"
       : tag === "service"
-        ? "Services"
-        : tag === "programme"
-          ? "Programmes"
-          : null
+      ? "Services"
+      : tag === "programme"
+      ? "Programmes"
+      : null;
   }, []);
 
-  const onDragEnd = useCallback((result) => {
-    if (result.reason === "DROP") {
-      if (!result.destination) {
-        return;
+  const onDragEnd = useCallback(
+    (result) => {
+      if (result.reason === "DROP") {
+        if (!result.destination) {
+          return;
+        }
+        dispatch({
+          type: "MOVE",
+          from: result.source.droppableId,
+          to: result.destination.droppableId,
+          fromIndex: result.source.index,
+          toIndex: result.destination.index,
+        });
       }
-      dispatch({
-        type: "MOVE",
-        from: result.source.droppableId,
-        to: result.destination.droppableId,
-        fromIndex: result.source.index,
-        toIndex: result.destination.index,
-      });
-    }
-  }, [dispatch]);
+    },
+    [dispatch]
+  );
 
-  const getCardIcon = useCallback((type) => type === "project"
-    ? projectIcon
-    : type === "service"
-      ? serviceIcon
-      : type === "job"
+  const getCardIcon = useCallback(
+    (type) =>
+      type === "project"
+        ? projectIcon
+        : type === "service"
+        ? serviceIcon
+        : type === "job"
         ? jobIcon
-        : programmeIcon, []);
+        : programmeIcon,
+    []
+  );
 
-  const bountyBoards =
+  const bountyBoards = (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <StyledTabs
         value={activeTab}
@@ -525,11 +580,7 @@ export default function BountiesView({ match }) {
       <div className={styles.tabContainer}>
         <div className={styles.searchContainer}>
           <div className={styles.searchIconContainer}>
-            <img
-              src={searchIcon}
-              alt="search"
-              className={styles.searchIcon}
-            />
+            <img src={searchIcon} alt="search" className={styles.searchIcon} />
             <input
               value={search}
               onChange={handleSearchChange}
@@ -612,8 +663,8 @@ export default function BountiesView({ match }) {
                       {tag === "active"
                         ? "Active"
                         : tag === "paused"
-                          ? "Paused"
-                          : "Completed"}
+                        ? "Paused"
+                        : "Completed"}
                     </div>
                   ))}
                 </div>
@@ -655,7 +706,10 @@ export default function BountiesView({ match }) {
             >
               {searchingAdmins && (
                 <div className={styles.dropdownContent} ref={adminRef}>
-                  {(activeTab === 0 && loggedInUser ? myFilteredAdmins : filteredAdmins).map((tag, i) => (
+                  {(activeTab === 0 && loggedInUser
+                    ? myFilteredAdmins
+                    : filteredAdmins
+                  ).map((tag, i) => (
                     <div
                       style={{
                         marginTop: i > 0 && "8px",
@@ -669,7 +723,9 @@ export default function BountiesView({ match }) {
                     >
                       <img
                         src={
-                          searchAdmins.find((cat) => cat === tag) ? checked : check
+                          searchAdmins.find((cat) => cat === tag)
+                            ? checked
+                            : check
                         }
                         alt="check"
                         style={{
@@ -714,7 +770,11 @@ export default function BountiesView({ match }) {
             </div>
           ) : (
             bountyColumns.map((type) => (
-              <Droppable type="PERSON" droppableId={type} key={`droppable-${type}`}>
+              <Droppable
+                type="PERSON"
+                droppableId={type}
+                key={`droppable-${type}`}
+              >
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
@@ -731,10 +791,10 @@ export default function BountiesView({ match }) {
                             type === "project"
                               ? "#EF8144"
                               : type === "service"
-                                ? "#4452EF"
-                                : type === "job"
-                                  ? "#00B6F0"
-                                  : "#AD1D73",
+                              ? "#4452EF"
+                              : type === "job"
+                              ? "#00B6F0"
+                              : "#AD1D73",
                         }}
                       >
                         <img
@@ -774,51 +834,62 @@ export default function BountiesView({ match }) {
         </div>
       </div>
     </div>
+  );
 
-  const handleActivePanelChange = useCallback((activePanel) => () => {
-    setActiveAccordionPanel(activePanel)
-  }, [])
+  const handleActivePanelChange = useCallback(
+    (activePanel) => () => {
+      setActiveAccordionPanel(activePanel);
+    },
+    []
+  );
 
   return (
     <MainLayout match={match}>
       <div className={styles.container}>
         <DragDropContext onDragEnd={onDragEnd}>
-          {
-            isMobile
-              ? <div className={styles.accordionContainer}>
-                  <Accordion expanded={activeAccordionPanel === 'first'} onChange={handleActivePanelChange('first')}>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Bounties</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails classes={{
-                      root: styles.scrollable
-                    }}>
-                        {bountyBoards}
-                    </AccordionDetails>
-                  </Accordion>
-                  <Accordion expanded={activeAccordionPanel === 'second'} onChange={handleActivePanelChange('second')}>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>Activities</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails classes={{
-                      root: styles.verticalScrollable
-                    }}>
-                      <ActivityView />
-                    </AccordionDetails>
-                  </Accordion>
-                </div>
-              : <>
-                  <div style={{ width: "30%", marginRight: 16, }}>
-                    <ActivityView />
-                  </div>
-                  <div style={{ width: "70%" }}>
-                    {bountyBoards}
-                  </div>
-                </>
-          }
-
+          {isMobile ? (
+            <div className={styles.accordionContainer}>
+              <Accordion
+                expanded={activeAccordionPanel === "first"}
+                onChange={handleActivePanelChange("first")}
+              >
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>Bounties</Typography>
+                </AccordionSummary>
+                <AccordionDetails
+                  classes={{
+                    root: styles.scrollable,
+                  }}
+                >
+                  {bountyBoards}
+                </AccordionDetails>
+              </Accordion>
+              <Accordion
+                expanded={activeAccordionPanel === "second"}
+                onChange={handleActivePanelChange("second")}
+              >
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>Activities</Typography>
+                </AccordionSummary>
+                <AccordionDetails
+                  classes={{
+                    root: styles.verticalScrollable,
+                  }}
+                >
+                  <ActivityView />
+                </AccordionDetails>
+              </Accordion>
+            </div>
+          ) : (
+            <>
+              <div style={{ width: "30%", marginRight: 16 }}>
+                <ActivityView />
+              </div>
+              <div style={{ width: "70%" }}>{bountyBoards}</div>
+            </>
+          )}
         </DragDropContext>
       </div>
     </MainLayout>
-  )
+  );
 }

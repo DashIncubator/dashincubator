@@ -4,7 +4,8 @@ import FadeIn from "react-fade-in";
 
 import { fetchOpenTasks } from "../../api/tasksApi";
 import { createUseStyles } from "react-jss";
-import useOutsideAlerter, { taskTypes, Breakpoints } from "../../utils/utils";
+import useOutsideAlerter, { taskTypes } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 import TaskListCard from "../../components/TaskListCard";
 
 import caretDownIcon from "./images/caretDown.svg";

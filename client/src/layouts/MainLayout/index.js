@@ -6,7 +6,8 @@ import {
   ConceptsLocation,
   PaymentsLocation,
   ProfileLocation,
-  RootLocation, TasksLocation,
+  RootLocation,
+  TasksLocation,
 } from "../../Locations";
 import logoutIcon from "./images/logout.svg";
 import { removeAuthToken } from "../../api/serverRequest";
@@ -15,7 +16,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import dashLogo from "../../views/Login/images/dashLogo.svg";
 import checkboxIcon from "./images/checkbox.svg";
 import { createUseStyles } from "react-jss";
-import { Breakpoints } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 import UserAvatar from "../../components/UserAvatar";
 import { countNotifications } from "../../api/notificationsApi";
 import { fetchDashboardCount } from "../../api/global";
@@ -96,7 +97,7 @@ const useStyles = createUseStyles({
     alignItems: "center",
     justifyContent: "center",
   },
-  [`@media (min-width: ${Breakpoints.sm}px)`]: {
+  [`@media (min-width: ${Breakpoints.md}px)`]: {
     container: { maxWidth: 1600, margin: "auto", padding: "0 88px" },
     logoText: {
       display: "block",
@@ -337,8 +338,7 @@ export default function MainLayout({ children, style, match }) {
               <img src={checkboxIcon} alt={"check"} style={{ width: "16px" }} />
               <div className={styles.navTitle}>Rewards</div>
             </div>
-            {
-              loggedInUser &&
+            {loggedInUser && (
               <Tooltip title="Logout">
                 <img
                   onClick={() => onLogout()}
@@ -352,17 +352,21 @@ export default function MainLayout({ children, style, match }) {
                   }}
                 />
               </Tooltip>
-            }
+            )}
             <div className={styles.avatarWrapper}>
               <UserAvatar user={loggedInUser} isProfile />
-              {
-                notifCount ? <div className={styles.notifications}>{notifCount}</div> : null
-              }
+              {notifCount ? (
+                <div className={styles.notifications}>{notifCount}</div>
+              ) : null}
             </div>
-            {
-              !loggedInUser &&
-              <div className={clsx(styles.navItem, styles.login)} onClick={handleLogin}>Login | Signup</div>
-            }
+            {!loggedInUser && (
+              <div
+                className={clsx(styles.navItem, styles.login)}
+                onClick={handleLogin}
+              >
+                Login | Signup
+              </div>
+            )}
           </div>
         </div>
       </div>

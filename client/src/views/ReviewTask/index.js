@@ -3,7 +3,7 @@ import { createUseStyles } from "react-jss";
 import DashModal from "../../components/DashModal";
 import doneIcon from "../Concept/images/done.svg";
 import useGlobalState from "../../state";
-import { toolbarConfig, Breakpoints, addHTTPS } from "../../utils/utils";
+import { toolbarConfig, addHTTPS } from "../../utils/utils";
 import RichTextEditor from "react-rte";
 import {
   getTask,
@@ -15,6 +15,7 @@ import commentIcon from "./images/comment.svg";
 import { CircularProgress } from "@material-ui/core";
 import { ProfileLocation } from "../../Locations";
 import { useHistory } from "react-router";
+import { Breakpoints } from "../../utils/breakpoint";
 
 const useStyles = createUseStyles({
   rte: {

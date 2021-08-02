@@ -4,16 +4,16 @@ import moment from "moment";
 import caretDown from "../views/Tasks/images/caretDown.svg";
 import { Badge, makeStyles } from "@material-ui/core";
 import { createUseStyles } from "react-jss";
-import {Breakpoints} from "../utils/utils";
+import { Breakpoints } from "../utils/breakpoint";
 
 const useStyles = makeStyles((theme) => ({
   customBadge: { backgroundColor: "white" },
   [`@media (max-width: ${Breakpoints.sm}px)`]: {
     customBadge: {
       backgroundColor: "rgb(0, 0, 0, 0.6)",
-      color: "white"
-    }
-  }
+      color: "white",
+    },
+  },
 }));
 
 const useStyles2 = createUseStyles({

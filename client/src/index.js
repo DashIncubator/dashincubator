@@ -4,11 +4,27 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./utils/reportWebVitals";
 import { GlobalStateProvider } from "./state";
+import { Breakpoints, BreakpointProvider } from "./utils/breakpoint";
+
+const queries = {
+  xs: `(max-width: ${Breakpoints.xs}px)`,
+  sm: `(min-width: ${Breakpoints.xs + 1}px) and (max-width: ${
+    Breakpoints.sm
+  }px)`,
+  md: `(min-width: ${Breakpoints.sm + 1}px) and (max-width: ${
+    Breakpoints.md
+  }px)`,
+  lg: `(min-width: ${Breakpoints.md + 1}px) and (max-width: ${
+    Breakpoints.lg
+  }px)`,
+};
 
 ReactDOM.render(
   <React.StrictMode>
     <GlobalStateProvider>
-      <App />
+      <BreakpointProvider queries={queries}>
+        <App />
+      </BreakpointProvider>
     </GlobalStateProvider>
   </React.StrictMode>,
   document.getElementById("root")

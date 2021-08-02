@@ -6,7 +6,7 @@ import { useHistory } from "react-router";
 import { CircularProgress } from "@material-ui/core";
 import DashModal from "../../components/DashModal";
 import doneIcon from "../Concept/images/done.svg";
-import { Breakpoints } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
 import projectIcon from "./images/project.svg";
 import jobIcon from "./images/job.svg";
 import serviceIcon from "./images/service.svg";

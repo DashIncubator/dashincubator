@@ -18,12 +18,9 @@ import projectIcon from "../ApproveConcept/images/project.svg";
 import serviceIcon from "../ApproveConcept/images/service.svg";
 import jobIcon from "../ApproveConcept/images/job.svg";
 import EditBountyView from "../EditBounty";
-import {
-  formatLink,
-  longhandRelative,
-  Breakpoints,
-  addHTTPS,
-} from "../../utils/utils";
+import { formatLink, longhandRelative, addHTTPS } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
+
 import TaskView from "../EditTask";
 import TaskItem from "../../components/TaskItem";
 import addTaskIcon from "./images/add.svg";
@@ -695,7 +692,9 @@ export default function BountyView({ match }) {
                         />
                         <div
                           className={styles.commentCTA}
-                          onClick={() => !loading && loggedInUser && onComment()}
+                          onClick={() =>
+                            !loading && loggedInUser && onComment()
+                          }
                         >
                           {loading ? (
                             <div

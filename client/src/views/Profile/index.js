@@ -9,7 +9,9 @@ import arrowIcon from "../Login/images/arrowRight.svg";
 import editIcon from "../Concept/images/edit.svg";
 import { createUseStyles } from "react-jss";
 import moment from "moment";
-import { formatTask, longhandRelative, Breakpoints } from "../../utils/utils";
+import { formatTask, longhandRelative } from "../../utils/utils";
+import { Breakpoints } from "../../utils/breakpoint";
+
 import {
   BountyLocation,
   ConceptLocation,
@@ -180,33 +182,34 @@ export default function ProfileView({ match }) {
                   </div>
                 </div>
                 <div>
-                  {loggedInUser && loggedInUser.username === currentUser.username && (
-                    <div>
-                      {loggedInUser.isSuperUser && (
+                  {loggedInUser &&
+                    loggedInUser.username === currentUser.username && (
+                      <div>
+                        {loggedInUser.isSuperUser && (
+                          <div
+                            onClick={() => history.push(UserManagementLocation)}
+                            className={styles.editCTA}
+                            style={{
+                              marginBottom: "8px",
+                              backgroundColor: "#AD1D73",
+                            }}
+                          >
+                            User management
+                          </div>
+                        )}
                         <div
-                          onClick={() => history.push(UserManagementLocation)}
                           className={styles.editCTA}
-                          style={{
-                            marginBottom: "8px",
-                            backgroundColor: "#AD1D73",
-                          }}
+                          onClick={() => setEditProfile(true)}
                         >
-                          User management
+                          <img
+                            src={editIcon}
+                            alt="edit"
+                            style={{ marginRight: "4px", width: "14px" }}
+                          />
+                          <div>Edit Profile</div>
                         </div>
-                      )}
-                      <div
-                        className={styles.editCTA}
-                        onClick={() => setEditProfile(true)}
-                      >
-                        <img
-                          src={editIcon}
-                          alt="edit"
-                          style={{ marginRight: "4px", width: "14px" }}
-                        />
-                        <div>Edit Profile</div>
                       </div>
-                    </div>
-                  )}
+                    )}
                 </div>
               </div>
               <div className={styles.contentContainer}>

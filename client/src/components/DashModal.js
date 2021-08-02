@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import { isMobile } from "react-device-detect";
 import closeIcon from "./images/close.svg";
 import { createUseStyles } from "react-jss";
-import { Breakpoints } from "../utils/utils";
+import { Breakpoints } from "../utils/breakpoint";
 
 const customStyles = {
   content: {

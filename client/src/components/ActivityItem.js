@@ -4,7 +4,9 @@ import moment from "moment";
 import { createUseStyles } from "react-jss";
 import { BountyLocation, ConceptLocation, ProfileLocation } from "../Locations";
 import { useHistory } from "react-router";
-import { cleanString, truncate, Breakpoints } from "../utils/utils";
+import { cleanString, truncate } from "../utils/utils";
+import { Breakpoints } from "../utils/breakpoint";
+
 import { renderToString } from "react-dom/server";
 import useGlobalState from "../state";
 import Textarea from "../components/Textarea";
@@ -328,16 +330,17 @@ export default function ActivityItem({
                       : "bounty"}
                   </div>
                 )}
-                {loggedInUser && loggedInUser.username === item.sourceUser.username && (
-                  <>
-                    <span
-                      style={{ marginLeft: "6px", cursor: "pointer" }}
-                      onClick={() => setEditing(editing ? false : true)}
-                    >
-                      <u>{editing ? "cancel" : "edit"}</u>
-                    </span>
-                  </>
-                )}
+                {loggedInUser &&
+                  loggedInUser.username === item.sourceUser.username && (
+                    <>
+                      <span
+                        style={{ marginLeft: "6px", cursor: "pointer" }}
+                        onClick={() => setEditing(editing ? false : true)}
+                      >
+                        <u>{editing ? "cancel" : "edit"}</u>
+                      </span>
+                    </>
+                  )}
               </div>
             </div>
             {!editing ? (

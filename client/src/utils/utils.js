@@ -24,13 +24,6 @@ export function truncate(source, size) {
   return source.length > size ? source.slice(0, size - 1) + "…" : source;
 }
 
-export const Breakpoints = {
-  xs: 320,
-  sm: 768,
-  md: 1200,
-  lg: 1600,
-};
-
 export const toolbarConfig = {
   display: [
     "BLOCK_TYPE_DROPDOWN",
